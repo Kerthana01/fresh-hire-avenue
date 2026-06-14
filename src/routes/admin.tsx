@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, Link, useNavigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { Briefcase, FolderTree, Mail, LayoutDashboard, Home } from "lucide-react";
@@ -11,10 +11,6 @@ export const Route = createFileRoute("/admin")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  beforeLoad: () => {
-    // Client-side gate (ssr:false) — auth handled in component via useAuth
-    return {};
-  },
   component: AdminLayout,
 });
 
@@ -80,6 +76,3 @@ function AdminLayout() {
     </div>
   );
 }
-
-// Re-export to satisfy unused import lint when redirect is needed elsewhere
-export const _r = redirect;
