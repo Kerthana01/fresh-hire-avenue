@@ -17,19 +17,15 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/jobs/")({
   validateSearch: searchSchema,
-  head: ({ match }) => {
-    const q = (match.search as { q?: string }).q;
-    const title = q ? `Search: ${q} — Career Alerts` : "Browse all jobs — Career Alerts";
-    return {
-      meta: [
-        { title },
-        { name: "description", content: "Browse the latest job openings across freshers, internships, off-campus drives and experienced hiring." },
-        { property: "og:title", content: title },
-        { property: "og:url", content: "/jobs" },
-      ],
-      links: [{ rel: "canonical", href: "/jobs" }],
-    };
-  },
+  head: () => ({
+    meta: [
+      { title: "Browse all jobs — Career Alerts" },
+      { name: "description", content: "Browse the latest job openings across freshers, internships, off-campus drives and experienced hiring." },
+      { property: "og:title", content: "Browse all jobs — Career Alerts" },
+      { property: "og:url", content: "/jobs" },
+    ],
+    links: [{ rel: "canonical", href: "/jobs" }],
+  }),
   component: JobsPage,
 });
 
