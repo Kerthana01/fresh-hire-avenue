@@ -337,12 +337,49 @@ function JobDetailPage() {
   );
 }
 
-function Section({ title, body }: { title: string; body: string }) {
+function Section({
+  title,
+  body,
+  children,
+}: {
+  title: string;
+  body?: string;
+  children?: React.ReactNode;
+}) {
   return (
     <section className="mt-6 rounded-2xl border border-border/70 bg-card p-6">
       <h2 className="mb-3 text-lg font-semibold">{title}</h2>
-      <div className="prose prose-sm max-w-none whitespace-pre-wrap text-foreground/90">{body}</div>
+      <div className="prose prose-sm max-w-none whitespace-pre-wrap text-foreground/90 leading-relaxed">
+        {body ?? children}
+      </div>
     </section>
+  );
+}
+
+function AdSlot({ label = "Advertisement" }: { label?: string }) {
+  return (
+    <div
+      className="mt-6 flex min-h-[120px] items-center justify-center rounded-2xl border border-dashed border-border/70 bg-muted/30 text-xs uppercase tracking-wider text-muted-foreground"
+      aria-label="Ad placement"
+    >
+      {label}
+    </div>
+  );
+}
+
+function FAQ({ items }: { items: { q: string; a: string }[] }) {
+  return (
+    <div className="divide-y divide-border/70">
+      {items.map((item) => (
+        <details key={item.q} className="group py-3">
+          <summary className="cursor-pointer list-none font-medium text-foreground marker:hidden">
+            <span className="mr-2 inline-block transition-transform group-open:rotate-90">›</span>
+            {item.q}
+          </summary>
+          <p className="mt-2 pl-5 text-sm text-muted-foreground">{item.a}</p>
+        </details>
+      ))}
+    </div>
   );
 }
 
