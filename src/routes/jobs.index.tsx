@@ -15,7 +15,7 @@ const searchSchema = z.object({
   page: z.number().int().min(1).optional().catch(1),
 });
 
-export const Route = createFileRoute("/jobs")({
+export const Route = createFileRoute("/jobs/")({
   validateSearch: searchSchema,
   head: ({ match }) => {
     const q = (match.search as { q?: string }).q;

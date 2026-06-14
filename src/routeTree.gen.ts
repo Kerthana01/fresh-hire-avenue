@@ -9,19 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as JobsIndexRouteImport } from './routes/jobs.index'
 import { Route as JobsSlugRouteImport } from './routes/jobs.$slug'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 
-const JobsRoute = JobsRouteImport.update({
-  id: '/jobs',
-  path: '/jobs',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsIndexRoute = JobsIndexRouteImport.update({
+  id: '/jobs/',
+  path: '/jobs/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JobsSlugRoute = JobsSlugRouteImport.update({
@@ -37,51 +37,51 @@ const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/jobs': typeof JobsRouteWithChildren
   '/categories/$slug': typeof CategoriesSlugRoute
   '/jobs/$slug': typeof JobsSlugRoute
+  '/jobs/': typeof JobsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/jobs': typeof JobsRouteWithChildren
   '/categories/$slug': typeof CategoriesSlugRoute
   '/jobs/$slug': typeof JobsSlugRoute
+  '/jobs': typeof JobsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/jobs': typeof JobsRouteWithChildren
   '/categories/$slug': typeof CategoriesSlugRoute
   '/jobs/$slug': typeof JobsSlugRoute
+  '/jobs/': typeof JobsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/jobs' | '/categories/$slug' | '/jobs/$slug'
+  fullPaths: '/' | '/categories/$slug' | '/jobs/$slug' | '/jobs/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/jobs' | '/categories/$slug' | '/jobs/$slug'
-  id: '__root__' | '/' | '/jobs' | '/categories/$slug' | '/jobs/$slug'
+  to: '/' | '/categories/$slug' | '/jobs/$slug' | '/jobs'
+  id: '__root__' | '/' | '/categories/$slug' | '/jobs/$slug' | '/jobs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  JobsRoute: typeof JobsRouteWithChildren
   CategoriesSlugRoute: typeof CategoriesSlugRoute
+  JobsIndexRoute: typeof JobsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/jobs': {
-      id: '/jobs'
-      path: '/jobs'
-      fullPath: '/jobs'
-      preLoaderRoute: typeof JobsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/': {
+      id: '/jobs/'
+      path: '/jobs'
+      fullPath: '/jobs/'
+      preLoaderRoute: typeof JobsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jobs/$slug': {
@@ -101,20 +101,10 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface JobsRouteChildren {
-  JobsSlugRoute: typeof JobsSlugRoute
-}
-
-const JobsRouteChildren: JobsRouteChildren = {
-  JobsSlugRoute: JobsSlugRoute,
-}
-
-const JobsRouteWithChildren = JobsRoute._addFileChildren(JobsRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  JobsRoute: JobsRouteWithChildren,
   CategoriesSlugRoute: CategoriesSlugRoute,
+  JobsIndexRoute: JobsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
