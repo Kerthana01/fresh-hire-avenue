@@ -14,11 +14,18 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as JobsIndexRouteImport } from './routes/jobs.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as JobsSlugRouteImport } from './routes/jobs.$slug'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
+import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminJobsIndexRouteImport } from './routes/admin.jobs.index'
+import { Route as AdminJobsNewRouteImport } from './routes/admin.jobs.new'
+import { Route as AdminJobsIdRouteImport } from './routes/admin.jobs.$id'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -45,6 +52,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -60,6 +72,11 @@ const JobsIndexRoute = JobsIndexRouteImport.update({
   path: '/jobs/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const JobsSlugRoute = JobsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -70,18 +87,50 @@ const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
   path: '/categories/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminJobsIndexRoute = AdminJobsIndexRouteImport.update({
+  id: '/jobs/',
+  path: '/jobs/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminJobsNewRoute = AdminJobsNewRouteImport.update({
+  id: '/jobs/new',
+  path: '/jobs/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminJobsIdRoute = AdminJobsIdRouteImport.update({
+  id: '/jobs/$id',
+  path: '/jobs/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/jobs/$slug': typeof JobsSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/jobs/': typeof JobsIndexRoute
+  '/admin/jobs/$id': typeof AdminJobsIdRoute
+  '/admin/jobs/new': typeof AdminJobsNewRoute
+  '/admin/jobs/': typeof AdminJobsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,36 +140,56 @@ export interface FileRoutesByTo {
   '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/jobs/$slug': typeof JobsSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/jobs': typeof JobsIndexRoute
+  '/admin/jobs/$id': typeof AdminJobsIdRoute
+  '/admin/jobs/new': typeof AdminJobsNewRoute
+  '/admin/jobs': typeof AdminJobsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/jobs/$slug': typeof JobsSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/jobs/': typeof JobsIndexRoute
+  '/admin/jobs/$id': typeof AdminJobsIdRoute
+  '/admin/jobs/new': typeof AdminJobsNewRoute
+  '/admin/jobs/': typeof AdminJobsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/auth'
     | '/contact'
     | '/disclaimer'
     | '/privacy'
     | '/terms'
+    | '/admin/categories'
+    | '/admin/subscribers'
     | '/categories/$slug'
     | '/jobs/$slug'
+    | '/admin/'
     | '/jobs/'
+    | '/admin/jobs/$id'
+    | '/admin/jobs/new'
+    | '/admin/jobs/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -130,26 +199,40 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/privacy'
     | '/terms'
+    | '/admin/categories'
+    | '/admin/subscribers'
     | '/categories/$slug'
     | '/jobs/$slug'
+    | '/admin'
     | '/jobs'
+    | '/admin/jobs/$id'
+    | '/admin/jobs/new'
+    | '/admin/jobs'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/auth'
     | '/contact'
     | '/disclaimer'
     | '/privacy'
     | '/terms'
+    | '/admin/categories'
+    | '/admin/subscribers'
     | '/categories/$slug'
     | '/jobs/$slug'
+    | '/admin/'
     | '/jobs/'
+    | '/admin/jobs/$id'
+    | '/admin/jobs/new'
+    | '/admin/jobs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DisclaimerRoute: typeof DisclaimerRoute
@@ -196,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -217,6 +307,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JobsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/jobs/$slug': {
       id: '/jobs/$slug'
       path: '/$slug'
@@ -231,12 +328,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/subscribers': {
+      id: '/admin/subscribers'
+      path: '/subscribers'
+      fullPath: '/admin/subscribers'
+      preLoaderRoute: typeof AdminSubscribersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/jobs/': {
+      id: '/admin/jobs/'
+      path: '/jobs'
+      fullPath: '/admin/jobs/'
+      preLoaderRoute: typeof AdminJobsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/jobs/new': {
+      id: '/admin/jobs/new'
+      path: '/jobs/new'
+      fullPath: '/admin/jobs/new'
+      preLoaderRoute: typeof AdminJobsNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/jobs/$id': {
+      id: '/admin/jobs/$id'
+      path: '/jobs/$id'
+      fullPath: '/admin/jobs/$id'
+      preLoaderRoute: typeof AdminJobsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminSubscribersRoute: typeof AdminSubscribersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminJobsIdRoute: typeof AdminJobsIdRoute
+  AdminJobsNewRoute: typeof AdminJobsNewRoute
+  AdminJobsIndexRoute: typeof AdminJobsIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminSubscribersRoute: AdminSubscribersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminJobsIdRoute: AdminJobsIdRoute,
+  AdminJobsNewRoute: AdminJobsNewRoute,
+  AdminJobsIndexRoute: AdminJobsIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DisclaimerRoute: DisclaimerRoute,
