@@ -183,5 +183,3 @@ function JobsPage() {
     </div>
   );
 }
-
-export { Link };
