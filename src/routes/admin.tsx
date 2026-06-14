@@ -18,12 +18,17 @@ export const Route = createFileRoute("/admin")({
   component: AdminLayout,
 });
 
-const NAV = [
+const NAV: ReadonlyArray<{
+  to: "/admin" | "/admin/jobs" | "/admin/categories" | "/admin/subscribers";
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+}> = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/jobs", label: "Jobs", icon: Briefcase },
   { to: "/admin/categories", label: "Categories", icon: FolderTree },
   { to: "/admin/subscribers", label: "Subscribers", icon: Mail },
-] as const;
+];
 
 function AdminLayout() {
   const { user, isAdmin, loading } = useAuth();

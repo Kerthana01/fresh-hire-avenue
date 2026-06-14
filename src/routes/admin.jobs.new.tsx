@@ -40,7 +40,10 @@ function NewJobPage() {
     };
     const { error } = await supabase.from("jobs").insert(payload);
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Job created");
     navigate({ to: "/admin/jobs" });
   };
