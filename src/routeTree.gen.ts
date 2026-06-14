@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -30,6 +31,11 @@ import { Route as AdminJobsIdRouteImport } from './routes/admin.jobs.$id'
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -78,9 +84,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const JobsSlugRoute = JobsSlugRouteImport.update({
-  id: '/jobs/$slug',
-  path: '/jobs/$slug',
-  getParentRoute: () => rootRouteImport,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => JobsRoute,
 } as any)
 const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
   id: '/categories/$slug',
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/disclaimer'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/admin/categories'
     | '/admin/subscribers'
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/disclaimer'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/admin/categories'
     | '/admin/subscribers'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/disclaimer'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/admin/categories'
     | '/admin/subscribers'
@@ -237,9 +249,9 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DisclaimerRoute: typeof DisclaimerRoute
   PrivacyRoute: typeof PrivacyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
-  JobsSlugRoute: typeof JobsSlugRoute
   JobsIndexRoute: typeof JobsIndexRoute
 }
 
@@ -250,6 +262,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -317,10 +336,10 @@ declare module '@tanstack/react-router' {
     }
     '/jobs/$slug': {
       id: '/jobs/$slug'
-      path: '/jobs/$slug'
+      path: '/$slug'
       fullPath: '/jobs/$slug'
       preLoaderRoute: typeof JobsSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof JobsRoute
     }
     '/categories/$slug': {
       id: '/categories/$slug'
@@ -395,11 +414,21 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DisclaimerRoute: DisclaimerRoute,
   PrivacyRoute: PrivacyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,
-  JobsSlugRoute: JobsSlugRoute,
   JobsIndexRoute: JobsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
