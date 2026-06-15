@@ -3,12 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
   ArrowLeft,
-  Briefcase,
   Calendar,
   CheckCircle2,
   Copy,
   ExternalLink,
-  GraduationCap,
   IndianRupee,
   MapPin,
   Share2,
