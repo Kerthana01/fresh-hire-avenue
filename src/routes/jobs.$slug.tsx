@@ -184,21 +184,15 @@ function JobDetailPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm text-muted-foreground">{job.company_name}</p>
-                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{job.job_title}</h1>
+                <h1 className="text-2xl font-bold tracking-tight sm:text-4xl">{job.job_title}</h1>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {job.location && <Badge variant="secondary"><MapPin className="mr-1 h-3 w-3" />{job.location}</Badge>}
-                  {job.experience && <Badge variant="secondary"><Briefcase className="mr-1 h-3 w-3" />{job.experience}</Badge>}
                   {job.salary && <Badge variant="secondary"><IndianRupee className="mr-1 h-3 w-3" />{job.salary}</Badge>}
-                  {job.qualification && <Badge variant="secondary"><GraduationCap className="mr-1 h-3 w-3" />{job.qualification}</Badge>}
+                  <Badge variant="secondary"><Calendar className="mr-1 h-3 w-3" />Posted {format(new Date(job.created_at), "PP")}</Badge>
                 </div>
               </div>
             </div>
             <div className="mt-5 flex flex-wrap items-center gap-2">
-              <Button asChild size="sm" className="flex-1 sm:flex-none">
-                <a href={job.apply_link} target="_blank" rel="noopener noreferrer">
-                  Quick Apply <ExternalLink className="ml-1.5 h-4 w-4" />
-                </a>
-              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -207,12 +201,27 @@ function JobDetailPage() {
                   toast.success("Link copied");
                 }}
               >
-                <Copy className="mr-1.5 h-4 w-4" /> Copy
+                <Copy className="mr-1.5 h-4 w-4" /> Copy link
               </Button>
             </div>
           </header>
 
-          <Section title="Job Overview">
+          <TableOfContents
+            items={[
+              { id: "overview", label: "Job Overview" },
+              { id: "about-company", label: "About Company" },
+              { id: "job-description", label: "Job Description" },
+              ...(job.responsibilities ? [{ id: "responsibilities", label: "Key Responsibilities" }] : []),
+              ...(job.skills ? [{ id: "skills", label: "Required Skills" }] : []),
+              ...(job.eligibility ? [{ id: "eligibility", label: "Eligibility Criteria" }] : []),
+              ...(job.salary ? [{ id: "salary", label: "Salary Details" }] : []),
+              ...(job.selection_process ? [{ id: "selection", label: "Selection Process" }] : []),
+              { id: "faq", label: "FAQ" },
+              { id: "apply", label: "Apply" },
+            ]}
+          />
+
+          <Section id="overview" title="Job Overview">
             <p>
               <strong>{job.company_name}</strong> is hiring for the role of{" "}
               <strong>{job.job_title}</strong>
@@ -232,9 +241,9 @@ function JobDetailPage() {
             </ul>
           </Section>
 
-          <AdSlot label="Advertisement" />
+          <AdSlot slot="after-overview" />
 
-          <Section title={`About ${job.company_name}`}>
+          <Section id="about-company" title={`About ${job.company_name}`}>
             <p>
               {job.company_name} is actively hiring for the position of{" "}
               {job.job_title}. Joining a growing team like {job.company_name} can be a
@@ -244,18 +253,20 @@ function JobDetailPage() {
             </p>
           </Section>
 
-          <Section title="Job Description" body={job.job_description} />
+          <Section id="job-description" title="Job Description" body={job.job_description} />
 
-          <AdSlot label="Advertisement" />
+          <AdSlot slot="after-description" />
 
-          {job.responsibilities && <Section title="Responsibilities" body={job.responsibilities} />}
-          {job.eligibility && <Section title="Eligibility" body={job.eligibility} />}
-          {job.skills && <Section title="Skills Required" body={job.skills} />}
+          {job.responsibilities && <Section id="responsibilities" title="Key Responsibilities" body={job.responsibilities} />}
+          {job.skills && <Section id="skills" title="Required Skills" body={job.skills} />}
+          {job.eligibility && <Section id="eligibility" title="Eligibility Criteria" body={job.eligibility} />}
 
-          <AdSlot label="Advertisement" />
+          <AdSlot slot="before-first-apply" />
+
+          <ApplyCta job={job} variant="primary" heading="Apply for this Job" />
 
           {job.salary && (
-            <Section title="Salary Details">
+            <Section id="salary" title="Salary Details">
               <p>
                 The expected salary for the {job.job_title} role at {job.company_name} is{" "}
                 <strong>{job.salary}</strong>. Final compensation may vary based on
@@ -263,9 +274,9 @@ function JobDetailPage() {
               </p>
             </Section>
           )}
-          {job.selection_process && <Section title="Selection Process" body={job.selection_process} />}
+          {job.selection_process && <Section id="selection" title="Selection Process" body={job.selection_process} />}
 
-          <Section title="Frequently Asked Questions">
+          <Section id="faq" title="Frequently Asked Questions">
             <FAQ
               items={[
                 {
@@ -292,36 +303,18 @@ function JobDetailPage() {
             />
           </Section>
 
-          <AdSlot label="Advertisement" />
+          <AdSlot slot="before-related" />
+
+          <ApplyCta job={job} variant="primary" heading="Apply for this Job" id="apply" />
 
           {related.data && related.data.length > 0 && (
             <section className="mt-6">
-              <h2 className="mb-4 text-xl font-bold tracking-tight">Related Jobs</h2>
+              <h2 className="mb-4 text-2xl font-bold tracking-tight">Related Jobs</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {related.data.map((j) => <JobCard key={j.slug} job={j} />)}
               </div>
             </section>
           )}
-
-          <section className="mt-6 rounded-2xl border border-primary/30 bg-[image:var(--gradient-hero)] p-8 text-center text-primary-foreground">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Apply for this Job
-            </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm opacity-90">
-              Don't miss this opportunity at {job.company_name}. Click below to apply
-              through the official application link.
-            </p>
-            <Button asChild size="lg" variant="secondary" className="mt-5">
-              <a href={job.apply_link} target="_blank" rel="noopener noreferrer">
-                Apply for this Job <ExternalLink className="ml-1.5 h-4 w-4" />
-              </a>
-            </Button>
-            {job.last_date && (
-              <p className="mt-3 text-xs opacity-80">
-                Last date: {format(new Date(job.last_date), "PPP")}
-              </p>
-            )}
-          </section>
         </article>
 
         <aside className="space-y-6">
@@ -361,32 +354,94 @@ function JobDetailPage() {
 }
 
 function Section({
+  id,
   title,
   body,
   children,
 }: {
+  id?: string;
   title: string;
   body?: string;
   children?: React.ReactNode;
 }) {
   return (
-    <section className="mt-6 rounded-2xl border border-border/70 bg-card p-6">
-      <h2 className="mb-3 text-lg font-semibold">{title}</h2>
-      <div className="prose prose-sm max-w-none whitespace-pre-wrap text-foreground/90 leading-relaxed">
+    <section id={id} className="mt-8 scroll-mt-24 rounded-2xl border border-border/70 bg-card p-6 sm:p-8">
+      <h2 className="mb-4 text-2xl font-bold tracking-tight">{title}</h2>
+      <div className="prose prose-sm max-w-none whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
         {body ?? children}
       </div>
     </section>
   );
 }
 
-function AdSlot({ label = "Advertisement" }: { label?: string }) {
+function AdSlot({ slot }: { slot: string }) {
   return (
     <div
-      className="mt-6 flex min-h-[120px] items-center justify-center rounded-2xl border border-dashed border-border/70 bg-muted/30 text-xs uppercase tracking-wider text-muted-foreground"
-      aria-label="Ad placement"
+      data-ad-slot={slot}
+      className="mt-8 min-h-[100px] rounded-2xl bg-muted/20"
+      aria-hidden="true"
     >
-      {label}
     </div>
+  );
+}
+
+function ApplyCta({
+  job,
+  heading,
+  id,
+}: {
+  job: { apply_link: string; company_name: string; last_date: string | null };
+  variant?: "primary";
+  heading: string;
+  id?: string;
+}) {
+  return (
+    <section
+      id={id}
+      className="mt-8 scroll-mt-24 rounded-2xl border border-primary/30 bg-[image:var(--gradient-hero)] p-8 text-center text-primary-foreground"
+    >
+      <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{heading}</h2>
+      <p className="mx-auto mt-2 max-w-xl text-sm opacity-90">
+        Don't miss this opportunity at {job.company_name}. Click below to apply
+        through the official application link.
+      </p>
+      <Button asChild size="lg" variant="secondary" className="mt-5">
+        <a href={job.apply_link} target="_blank" rel="noopener noreferrer">
+          Apply for this Job <ExternalLink className="ml-1.5 h-4 w-4" />
+        </a>
+      </Button>
+      {job.last_date && (
+        <p className="mt-3 text-xs opacity-80">
+          Last date: {format(new Date(job.last_date), "PPP")}
+        </p>
+      )}
+    </section>
+  );
+}
+
+function TableOfContents({ items }: { items: { id: string; label: string }[] }) {
+  return (
+    <nav
+      aria-label="Table of contents"
+      className="mt-6 rounded-2xl border border-border/70 bg-card/60 p-5"
+    >
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        On this page
+      </p>
+      <ol className="grid gap-2 text-sm sm:grid-cols-2">
+        {items.map((item, i) => (
+          <li key={item.id}>
+            <a
+              href={`#${item.id}`}
+              className="flex items-baseline gap-2 text-foreground/80 hover:text-primary"
+            >
+              <span className="text-xs text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>
+              <span>{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
   );
 }
 
