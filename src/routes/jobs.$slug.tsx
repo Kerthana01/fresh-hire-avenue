@@ -108,15 +108,38 @@ function JobDetailPage() {
     queryKey: ["related", job?.category_id, job?.id],
     enabled: !!job,
     queryFn: async () => {
-      const q = supabase
+      const base = () => supabase
         .from("jobs")
         .select("slug,company_name,company_logo,job_title,location,experience,salary,created_at,is_featured")
         .eq("is_published", true)
-        .neq("id", job!.id)
-        .limit(4);
-      const final = job?.category_id ? q.eq("category_id", job.category_id) : q;
-      const { data } = await final;
-      return (data ?? []) as JobCardData[];
+        .neq("id", job!.id);
+
+      const results: JobCardData[] = [];
+      const seen = new Set<string>();
+      const push = (rows: JobCardData[] | null | undefined) => {
+        for (const r of rows ?? []) {
+          if (seen.has(r.slug)) continue;
+          seen.add(r.slug);
+          results.push(r);
+          if (results.length >= 6) break;
+        }
+      };
+
+      if (job?.category_id) {
+        const { data } = await base().eq("category_id", job.category_id).limit(6);
+        push(data as JobCardData[] | null);
+      }
+      if (results.length < 6) {
+        const { data } = await base().eq("company_name", job!.company_name).limit(6);
+        push(data as JobCardData[] | null);
+      }
+      if (results.length < 6) {
+        const { data } = await base()
+          .order("created_at", { ascending: false })
+          .limit(6);
+        push(data as JobCardData[] | null);
+      }
+      return results.slice(0, 6);
     },
   });
 
@@ -271,6 +294,15 @@ function JobDetailPage() {
 
           <AdSlot label="Advertisement" />
 
+          {related.data && related.data.length > 0 && (
+            <section className="mt-6">
+              <h2 className="mb-4 text-xl font-bold tracking-tight">Related Jobs</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {related.data.map((j) => <JobCard key={j.slug} job={j} />)}
+              </div>
+            </section>
+          )}
+
           <section className="mt-6 rounded-2xl border border-primary/30 bg-[image:var(--gradient-hero)] p-8 text-center text-primary-foreground">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               Apply for this Job
@@ -324,15 +356,6 @@ function JobDetailPage() {
           </div>
         </aside>
       </div>
-
-      {related.data && related.data.length > 0 && (
-        <section className="mt-16">
-          <h2 className="mb-4 text-xl font-bold tracking-tight">Similar jobs</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {related.data.map((j) => <JobCard key={j.slug} job={j} />)}
-          </div>
-        </section>
-      )}
     </div>
   );
 }
