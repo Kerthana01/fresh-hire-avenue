@@ -294,6 +294,15 @@ function JobDetailPage() {
 
           <AdSlot label="Advertisement" />
 
+          {related.data && related.data.length > 0 && (
+            <section className="mt-6">
+              <h2 className="mb-4 text-xl font-bold tracking-tight">Related Jobs</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {related.data.map((j) => <JobCard key={j.slug} job={j} />)}
+              </div>
+            </section>
+          )}
+
           <section className="mt-6 rounded-2xl border border-primary/30 bg-[image:var(--gradient-hero)] p-8 text-center text-primary-foreground">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               Apply for this Job
@@ -347,15 +356,6 @@ function JobDetailPage() {
           </div>
         </aside>
       </div>
-
-      {related.data && related.data.length > 0 && (
-        <section className="mt-16">
-          <h2 className="mb-4 text-xl font-bold tracking-tight">Similar jobs</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {related.data.map((j) => <JobCard key={j.slug} job={j} />)}
-          </div>
-        </section>
-      )}
     </div>
   );
 }
