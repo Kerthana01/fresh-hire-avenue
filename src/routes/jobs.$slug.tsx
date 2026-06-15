@@ -108,15 +108,38 @@ function JobDetailPage() {
     queryKey: ["related", job?.category_id, job?.id],
     enabled: !!job,
     queryFn: async () => {
-      const q = supabase
+      const base = () => supabase
         .from("jobs")
         .select("slug,company_name,company_logo,job_title,location,experience,salary,created_at,is_featured")
         .eq("is_published", true)
-        .neq("id", job!.id)
-        .limit(4);
-      const final = job?.category_id ? q.eq("category_id", job.category_id) : q;
-      const { data } = await final;
-      return (data ?? []) as JobCardData[];
+        .neq("id", job!.id);
+
+      const results: JobCardData[] = [];
+      const seen = new Set<string>();
+      const push = (rows: JobCardData[] | null | undefined) => {
+        for (const r of rows ?? []) {
+          if (seen.has(r.slug)) continue;
+          seen.add(r.slug);
+          results.push(r);
+          if (results.length >= 6) break;
+        }
+      };
+
+      if (job?.category_id) {
+        const { data } = await base().eq("category_id", job.category_id).limit(6);
+        push(data as JobCardData[] | null);
+      }
+      if (results.length < 6) {
+        const { data } = await base().eq("company_name", job!.company_name).limit(6);
+        push(data as JobCardData[] | null);
+      }
+      if (results.length < 6) {
+        const { data } = await base()
+          .order("created_at", { ascending: false })
+          .limit(6);
+        push(data as JobCardData[] | null);
+      }
+      return results.slice(0, 6);
     },
   });
 
