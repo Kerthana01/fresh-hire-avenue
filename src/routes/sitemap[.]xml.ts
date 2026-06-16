@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { slugify } from "@/lib/slug";
 
 // TODO: replace with your project URL once a project name or custom domain is set.
 const BASE_URL = "";
@@ -10,9 +11,13 @@ export const Route = createFileRoute("/sitemap.xml")({
       GET: async () => {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const [jobs, cats] = await Promise.all([
-          supabaseAdmin.from("jobs").select("slug,updated_at").eq("is_published", true),
+          supabaseAdmin.from("jobs").select("slug,updated_at,company_name").eq("is_published", true),
           supabaseAdmin.from("categories").select("slug"),
         ]);
+
+        const companySlugs = Array.from(
+          new Set((jobs.data ?? []).map((j) => slugify(j.company_name))),
+        );
 
         const staticPaths = [
           { path: "/", priority: "1.0", changefreq: "daily" },
@@ -35,6 +40,11 @@ export const Route = createFileRoute("/sitemap.xml")({
             changefreq: "weekly",
             priority: "0.7",
           }))),
+          ...companySlugs.map((s) => ({
+            loc: `${BASE_URL}/company/${s}`,
+            changefreq: "weekly",
+            priority: "0.7",
+          })),
           ...((jobs.data ?? []).map((j) => ({
             loc: `${BASE_URL}/jobs/${j.slug}`,
             lastmod: j.updated_at,

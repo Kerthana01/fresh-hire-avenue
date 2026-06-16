@@ -16,12 +16,16 @@ import {
   Search,
   Mail,
   CheckCircle2,
+  ShieldCheck,
+  CalendarClock,
+  Star,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
+import { slugify } from "@/lib/slug";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -52,11 +56,6 @@ const CATEGORY_ICONS: Record<string, typeof Briefcase> = {
   service: Building2,
   government: Landmark,
 };
-
-const FEATURED_COMPANIES = [
-  "Deloitte", "Infosys", "TCS", "Wipro", "Accenture", "Cognizant",
-  "Capgemini", "HCL", "Amazon", "Microsoft", "Google",
-];
 
 function Index() {
   const latestJobs = useQuery({
@@ -100,12 +99,38 @@ function Index() {
     },
   });
 
+  const companies = useQuery({
+    queryKey: ["companies", "featured"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("company_name,company_logo")
+        .eq("is_published", true);
+      if (error) throw error;
+      const map = new Map<string, { name: string; logo: string | null; count: number }>();
+      for (const row of data ?? []) {
+        const key = slugify(row.company_name);
+        const existing = map.get(key);
+        if (existing) {
+          existing.count += 1;
+          if (!existing.logo && row.company_logo) existing.logo = row.company_logo;
+        } else {
+          map.set(key, { name: row.company_name, logo: row.company_logo, count: 1 });
+        }
+      }
+      return Array.from(map.entries())
+        .map(([slug, v]) => ({ slug, ...v }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 12);
+    },
+  });
+
   return (
     <div>
       <HeroSection trending={trendingJobs.data ?? []} />
       <LatestJobsSection jobs={latestJobs.data ?? []} loading={latestJobs.isLoading} />
       <CategoriesSection categories={categories.data ?? []} />
-      <FeaturedCompaniesSection />
+      <FeaturedCompaniesSection companies={companies.data ?? []} />
       <NewsletterSection />
     </div>
   );
@@ -129,9 +154,9 @@ function HeroSection({ trending }: { trending: Array<{ slug: string; company_nam
           <Sparkles className="mr-1 h-3 w-3 text-accent" /> Updated daily • Verified roles
         </Badge>
         <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-          Find your next role at India&apos;s{" "}
+          Find Freshers Jobs, Internships &amp; Off-Campus Drives at{" "}
           <span className="bg-[image:var(--gradient-hero)] bg-clip-text text-transparent">
-            top companies
+            India&apos;s Top Companies
           </span>
         </h1>
         <p className="mt-5 max-w-2xl text-base text-muted-foreground md:text-lg">
@@ -174,18 +199,26 @@ function HeroSection({ trending }: { trending: Array<{ slug: string; company_nam
           </div>
         )}
 
-        <dl className="mt-10 grid max-w-2xl grid-cols-3 gap-6">
+        <ul className="mt-10 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
           {[
-            { k: "10k+", v: "Active jobs" },
-            { k: "500+", v: "Companies" },
-            { k: "Daily", v: "Updates" },
-          ].map((s) => (
-            <div key={s.v}>
-              <dt className="text-2xl font-bold text-foreground sm:text-3xl">{s.k}</dt>
-              <dd className="text-sm text-muted-foreground">{s.v}</dd>
-            </div>
+            { Icon: ShieldCheck, label: "Verified Jobs", sub: "Hand-checked listings" },
+            { Icon: CalendarClock, label: "Daily Updates", sub: "Fresh roles every day" },
+            { Icon: Star, label: "Top Companies", sub: "Product & service leaders" },
+          ].map(({ Icon, label, sub }) => (
+            <li
+              key={label}
+              className="flex items-center gap-3 rounded-xl border border-border/70 bg-background/60 p-3 backdrop-blur"
+            >
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[image:var(--gradient-hero)] text-primary-foreground">
+                <Icon className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground">{label}</p>
+                <p className="truncate text-xs text-muted-foreground">{sub}</p>
+              </div>
+            </li>
           ))}
-        </dl>
+        </ul>
       </div>
     </section>
   );
@@ -257,23 +290,42 @@ function CategoriesSection({ categories }: { categories: Array<{ slug: string; n
   );
 }
 
-function FeaturedCompaniesSection() {
+function FeaturedCompaniesSection({
+  companies,
+}: {
+  companies: Array<{ slug: string; name: string; logo: string | null; count: number }>;
+}) {
+  if (companies.length === 0) return null;
   return (
     <section className="container mx-auto px-4 py-16">
       <div className="mb-8 text-center">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Hiring at leading companies</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Job alerts from product giants and top service-based firms.
+          Explore open roles at the companies hiring right now.
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6">
-        {FEATURED_COMPANIES.map((c) => (
-          <div
-            key={c}
-            className="flex h-20 items-center justify-center rounded-xl border border-border/60 bg-card text-sm font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {companies.map((c) => (
+          <Link
+            key={c.slug}
+            to="/company/$slug"
+            params={{ slug: c.slug }}
+            className="group flex items-center gap-3 rounded-xl border border-border/70 bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-soft)]"
           >
-            {c}
-          </div>
+            <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-muted text-xs font-bold text-muted-foreground">
+              {c.logo ? (
+                <img src={c.logo} alt={`${c.name} logo`} className="h-full w-full object-cover" loading="lazy" />
+              ) : (
+                <Building2 className="h-5 w-5" />
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-foreground group-hover:text-primary">{c.name}</p>
+              <p className="truncate text-xs text-muted-foreground">
+                {c.count} active {c.count === 1 ? "opening" : "openings"}
+              </p>
+            </div>
+          </Link>
         ))}
       </div>
     </section>

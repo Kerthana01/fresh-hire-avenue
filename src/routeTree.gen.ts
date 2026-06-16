@@ -21,6 +21,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as JobsIndexRouteImport } from './routes/jobs.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as JobsSlugRouteImport } from './routes/jobs.$slug'
+import { Route as CompanySlugRouteImport } from './routes/company.$slug'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
@@ -88,6 +89,11 @@ const JobsSlugRoute = JobsSlugRouteImport.update({
   path: '/jobs/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompanySlugRoute = CompanySlugRouteImport.update({
+  id: '/company/$slug',
+  path: '/company/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
   id: '/categories/$slug',
   path: '/categories/$slug',
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/company/$slug': typeof CompanySlugRoute
   '/jobs/$slug': typeof JobsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/jobs/': typeof JobsIndexRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/company/$slug': typeof CompanySlugRoute
   '/jobs/$slug': typeof JobsSlugRoute
   '/admin': typeof AdminIndexRoute
   '/jobs': typeof JobsIndexRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/company/$slug': typeof CompanySlugRoute
   '/jobs/$slug': typeof JobsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/jobs/': typeof JobsIndexRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/subscribers'
     | '/categories/$slug'
+    | '/company/$slug'
     | '/jobs/$slug'
     | '/admin/'
     | '/jobs/'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/subscribers'
     | '/categories/$slug'
+    | '/company/$slug'
     | '/jobs/$slug'
     | '/admin'
     | '/jobs'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/subscribers'
     | '/categories/$slug'
+    | '/company/$slug'
     | '/jobs/$slug'
     | '/admin/'
     | '/jobs/'
@@ -252,6 +264,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
+  CompanySlugRoute: typeof CompanySlugRoute
   JobsSlugRoute: typeof JobsSlugRoute
   JobsIndexRoute: typeof JobsIndexRoute
 }
@@ -342,6 +355,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JobsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/company/$slug': {
+      id: '/company/$slug'
+      path: '/company/$slug'
+      fullPath: '/company/$slug'
+      preLoaderRoute: typeof CompanySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/categories/$slug': {
       id: '/categories/$slug'
       path: '/categories/$slug'
@@ -418,6 +438,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,
+  CompanySlugRoute: CompanySlugRoute,
   JobsSlugRoute: JobsSlugRoute,
   JobsIndexRoute: JobsIndexRoute,
 }
