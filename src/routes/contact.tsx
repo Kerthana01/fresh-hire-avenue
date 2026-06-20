@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Github, Linkedin, Mail, MessageCircle, Twitter } from "lucide-react";
+import { Linkedin, Mail, MessageCircle, Twitter } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -36,13 +36,6 @@ function ContactPage() {
             <p className="text-sm text-muted-foreground">linkedin.com/in/kerthana-s</p>
           </div>
         </a>
-        <a href="https://github.com/Kerthana01/Kerthana01" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-hero)] text-primary-foreground"><Github className="h-4 w-4" /></span>
-          <div>
-            <p className="font-semibold">GitHub</p>
-            <p className="text-sm text-muted-foreground">github.com/Kerthana01</p>
-          </div>
-        </a>
         <a href="https://x.com/kerthanak528" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
           <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><Twitter className="h-4 w-4" /></span>
           <div>
@@ -53,8 +46,8 @@ function ContactPage() {
         <a href="#" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
           <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><MessageCircle className="h-4 w-4" /></span>
           <div>
-            <p className="font-semibold">Telegram channel</p>
-            <p className="text-sm text-muted-foreground">Join for instant alerts</p>
+            <p className="font-semibold">WhatsApp Channel</p>
+            <p className="text-sm text-muted-foreground">Join our WhatsApp Channel for instant job alerts and daily hiring updates.</p>
           </div>
         </a>
       </div>
