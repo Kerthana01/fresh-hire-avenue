@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Briefcase, Github, Linkedin, Twitter } from "lucide-react";
+import { Briefcase, Linkedin, Twitter } from "lucide-react";
 
 export function Footer() {
   return (
@@ -17,7 +17,6 @@ export function Footer() {
           </p>
           <div className="mt-4 flex gap-3 text-muted-foreground">
             <a href="https://www.linkedin.com/in/kerthana-s/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-foreground"><Linkedin className="h-4 w-4" /></a>
-            <a href="https://github.com/Kerthana01/Kerthana01" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-foreground"><Github className="h-4 w-4" /></a>
             <a href="https://x.com/kerthanak528" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="hover:text-foreground"><Twitter className="h-4 w-4" /></a>
           </div>
         </div>
