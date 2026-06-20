@@ -148,7 +148,7 @@ function JobDetailPage() {
     const text = encodeURIComponent(`${job.job_title} at ${job.company_name}`);
     const url = encodeURIComponent(shareUrl);
     const map = {
-      whatsapp: `https://wa.me/?text=${text}%20${url}`,
+      whatsapp: `https://api.whatsapp.com/send?text=${text}%20${url}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
       telegram: `https://t.me/share/url?url=${url}&text=${text}`,
     };

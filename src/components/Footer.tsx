@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Briefcase, Facebook, Github, Linkedin, Twitter } from "lucide-react";
+import { Briefcase, Github, Linkedin, Twitter } from "lucide-react";
 
 export function Footer() {
   return (
@@ -15,11 +15,10 @@ export function Footer() {
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
             Trusted job updates for freshers, interns, and experienced professionals — verified daily.
           </p>
-          <div className="mt-4 flex gap-2 text-muted-foreground">
-            <a href="#" aria-label="Twitter" className="hover:text-foreground"><Twitter className="h-4 w-4" /></a>
-            <a href="#" aria-label="LinkedIn" className="hover:text-foreground"><Linkedin className="h-4 w-4" /></a>
-            <a href="#" aria-label="Facebook" className="hover:text-foreground"><Facebook className="h-4 w-4" /></a>
-            <a href="#" aria-label="GitHub" className="hover:text-foreground"><Github className="h-4 w-4" /></a>
+          <div className="mt-4 flex gap-3 text-muted-foreground">
+            <a href="https://www.linkedin.com/in/kerthana-s/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-foreground"><Linkedin className="h-4 w-4" /></a>
+            <a href="https://github.com/Kerthana01/Kerthana01" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-foreground"><Github className="h-4 w-4" /></a>
+            <a href="https://x.com/kerthanak528" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="hover:text-foreground"><Twitter className="h-4 w-4" /></a>
           </div>
         </div>
 
@@ -55,7 +54,7 @@ export function Footer() {
       <div className="border-t border-border/60">
         <div className="container mx-auto flex flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground sm:flex-row">
           <p>© {new Date().getFullYear()} Career Alerts. All rights reserved.</p>
-          <p>Built with love for job seekers.</p>
+          <p>Created by Kerthana to help students, freshers, interns, and professionals discover new career opportunities.</p>
         </div>
       </div>
     </footer>
