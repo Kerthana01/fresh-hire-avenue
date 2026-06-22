@@ -132,6 +132,7 @@ function Index() {
       <CategoriesSection categories={categories.data ?? []} />
       <FeaturedCompaniesSection companies={companies.data ?? []} />
       <NewsletterSection />
+      <WhatsAppChannelSection />
     </div>
   );
 }
