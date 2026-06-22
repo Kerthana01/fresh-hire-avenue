@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
+import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
