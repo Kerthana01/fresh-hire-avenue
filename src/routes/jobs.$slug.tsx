@@ -9,6 +9,7 @@ import {
   ExternalLink,
   IndianRupee,
   MapPin,
+  MessageCircle,
   Share2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -313,6 +314,20 @@ function JobDetailPage() {
               </div>
             </section>
           )}
+
+          <section className="mt-8 scroll-mt-24 rounded-2xl border border-[#25D366]/30 bg-card p-6 sm:p-8">
+            <h2 className="mb-3 text-2xl font-bold tracking-tight">
+              Get Daily Job Alerts on WhatsApp
+            </h2>
+            <p className="text-base leading-relaxed text-muted-foreground">
+              Join our WhatsApp Channel to receive daily job updates, internships, freshers hiring alerts, and off-campus opportunities.
+            </p>
+            <Button asChild size="lg" className="mt-5 bg-[#25D366] text-white hover:bg-[#128C7E]">
+              <a href="https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34" target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="mr-2 h-4 w-4" /> Join WhatsApp Channel
+              </a>
+            </Button>
+          </section>
         </article>
 
         <aside className="space-y-6">
