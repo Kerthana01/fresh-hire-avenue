@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
+import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
 
 const jobQuery = (slug: string) => ({
