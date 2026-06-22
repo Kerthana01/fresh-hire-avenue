@@ -399,6 +399,36 @@ function NewsletterSection() {
   );
 }
 
+function WhatsAppChannelSection() {
+  return (
+    <section className="container mx-auto px-4 pb-20">
+      <div className="relative overflow-hidden rounded-3xl border border-[#25D366]/30 bg-card p-8 shadow-[var(--shadow-soft)] md:p-12">
+        <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-[#25D366]/10 blur-3xl" aria-hidden />
+        <div className="relative grid items-center gap-6 md:grid-cols-2">
+          <div>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#25D366]/10 px-3 py-1 text-xs font-medium text-[#128C7E]">
+              <MessageCircle className="h-3.5 w-3.5" /> WhatsApp Channel
+            </div>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Join our WhatsApp Channel for instant job alerts, internships, off-campus drives, and daily hiring updates.
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Get verified job opportunities delivered directly to your WhatsApp. Stay updated with fresh openings from top companies every day.
+            </p>
+          </div>
+          <div className="flex items-center justify-center md:justify-end">
+            <Button asChild size="lg" className="h-12 bg-[#25D366] text-white hover:bg-[#128C7E]">
+              <a href="https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34" target="_blank" rel="noopener noreferrer">
+                Join WhatsApp Channel
+              </a>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function EmptyState({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center">
