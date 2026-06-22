@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
+import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
 
 const jobQuery = (slug: string) => ({
@@ -174,13 +175,7 @@ function JobDetailPage() {
         <article>
           <header className="rounded-2xl border border-border/70 bg-card p-6 shadow-[var(--shadow-soft)]">
             <div className="flex items-start gap-4">
-              <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl border border-border bg-muted text-base font-bold text-muted-foreground">
-                {job.company_logo ? (
-                  <img src={job.company_logo} alt={`${job.company_name} logo`} className="h-full w-full object-cover" />
-                ) : (
-                  job.company_name.slice(0, 2).toUpperCase()
-                )}
-              </div>
+              <CompanyLogo name={job.company_name} logo={job.company_logo} size="lg" />
               <div className="min-w-0 flex-1">
                 <p className="text-sm text-muted-foreground">{job.company_name}</p>
                 <h1 className="text-2xl font-bold tracking-tight sm:text-4xl">{job.job_title}</h1>

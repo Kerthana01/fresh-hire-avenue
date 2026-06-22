@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
+import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -314,13 +315,7 @@ function FeaturedCompaniesSection({
             params={{ slug: c.slug }}
             className="group flex items-center gap-3 rounded-xl border border-border/70 bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-soft)]"
           >
-            <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-muted text-xs font-bold text-muted-foreground">
-              {c.logo ? (
-                <img src={c.logo} alt={`${c.name} logo`} className="h-full w-full object-cover" loading="lazy" />
-              ) : (
-                <Building2 className="h-5 w-5" />
-              )}
-            </div>
+            <CompanyLogo name={c.name} logo={c.logo} size="md" />
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-foreground group-hover:text-primary">{c.name}</p>
               <p className="truncate text-xs text-muted-foreground">

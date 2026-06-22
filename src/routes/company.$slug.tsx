@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
+import { CompanyLogo } from "@/components/CompanyLogo";
 
 export const Route = createFileRoute("/company/$slug")({
   head: ({ params }) => {
@@ -108,13 +109,7 @@ function CompanyPage() {
             <span className="text-foreground">{name}</span>
           </nav>
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl border border-border bg-card text-sm font-bold text-muted-foreground">
-              {company.company_logo ? (
-                <img src={company.company_logo} alt={`${name} logo`} className="h-full w-full object-cover" />
-              ) : (
-                <Building2 className="h-7 w-7" />
-              )}
-            </div>
+            <CompanyLogo name={name} logo={company.company_logo} size="lg" />
             <div className="min-w-0">
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{name} Careers &amp; Jobs</h1>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -166,13 +161,7 @@ function CompanyPage() {
                   params={{ slug: c.slug }}
                   className="group flex items-center gap-3 rounded-xl border border-border/70 bg-card p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40"
                 >
-                  <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-muted text-xs font-bold text-muted-foreground">
-                    {c.logo ? (
-                      <img src={c.logo} alt={`${c.name} logo`} className="h-full w-full object-cover" loading="lazy" />
-                    ) : (
-                      <Building2 className="h-4 w-4" />
-                    )}
-                  </div>
+                  <CompanyLogo name={c.name} logo={c.logo} size="sm" />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-foreground group-hover:text-primary">{c.name}</p>
                     <p className="truncate text-[11px] text-muted-foreground">{c.count} {c.count === 1 ? "job" : "jobs"}</p>

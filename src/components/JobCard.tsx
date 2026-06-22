@@ -3,6 +3,7 @@ import { Briefcase, Calendar, IndianRupee, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
+import { CompanyLogo } from "@/components/CompanyLogo";
 
 export interface JobCardData {
   slug: string;
@@ -17,7 +18,6 @@ export interface JobCardData {
 }
 
 export function JobCard({ job }: { job: JobCardData }) {
-  const initials = job.company_name.slice(0, 2).toUpperCase();
   return (
     <Link
       to="/jobs/$slug"
@@ -30,13 +30,7 @@ export function JobCard({ job }: { job: JobCardData }) {
         </Badge>
       )}
       <div className="flex items-start gap-4">
-        <div className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-xl border border-border bg-muted text-sm font-bold text-muted-foreground">
-          {job.company_logo ? (
-            <img src={job.company_logo} alt={`${job.company_name} logo`} className="h-full w-full object-cover" loading="lazy" />
-          ) : (
-            initials
-          )}
-        </div>
+        <CompanyLogo name={job.company_name} logo={job.company_logo} size="md" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm text-muted-foreground">{job.company_name}</p>
           <h3 className="truncate text-base font-semibold text-foreground group-hover:text-primary">
