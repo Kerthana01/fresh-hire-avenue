@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Linkedin, Mail, MessageCircle, Twitter } from "lucide-react";
+import { Instagram, Linkedin, Mail, MessageCircle, Twitter, Youtube } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -40,14 +40,28 @@ function ContactPage() {
           <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><Twitter className="h-4 w-4" /></span>
           <div>
             <p className="font-semibold">X (Twitter)</p>
-            <p className="text-sm text-muted-foreground">x.com/kerthanak528</p>
+            <p className="text-sm text-muted-foreground">Follow on X</p>
           </div>
         </a>
-        <a href="#" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
+          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><Instagram className="h-4 w-4" /></span>
+          <div>
+            <p className="font-semibold">Instagram</p>
+            <p className="text-sm text-muted-foreground">Follow on Instagram</p>
+          </div>
+        </a>
+        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
+          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><Youtube className="h-4 w-4" /></span>
+          <div>
+            <p className="font-semibold">YouTube</p>
+            <p className="text-sm text-muted-foreground">Subscribe on YouTube</p>
+          </div>
+        </a>
+        <a href="https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
           <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><MessageCircle className="h-4 w-4" /></span>
           <div>
             <p className="font-semibold">WhatsApp Channel</p>
-            <p className="text-sm text-muted-foreground">Join our WhatsApp Channel for instant job alerts and daily hiring updates.</p>
+            <p className="text-sm text-muted-foreground">Join for instant job alerts</p>
           </div>
         </a>
       </div>
