@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Briefcase, Linkedin, Twitter } from "lucide-react";
+import { Briefcase, Instagram, Linkedin, MessageCircle, Twitter, Youtube } from "lucide-react";
 
 export function Footer() {
   return (
@@ -18,6 +18,9 @@ export function Footer() {
           <div className="mt-4 flex gap-3 text-muted-foreground">
             <a href="https://www.linkedin.com/in/kerthana-s/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-foreground"><Linkedin className="h-4 w-4" /></a>
             <a href="https://x.com/kerthanak528" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="hover:text-foreground"><Twitter className="h-4 w-4" /></a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-foreground"><Instagram className="h-4 w-4" /></a>
+            <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-foreground"><Youtube className="h-4 w-4" /></a>
+            <a href="https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Channel" className="hover:text-foreground"><MessageCircle className="h-4 w-4" /></a>
           </div>
         </div>
 
