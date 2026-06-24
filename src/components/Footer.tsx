@@ -1,6 +1,34 @@
 import { Link } from "@tanstack/react-router";
 import { Briefcase, Instagram, Linkedin, MessageCircle, Twitter, Youtube } from "lucide-react";
 
+const SOCIAL_LINKS = [
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/kerthana-s/",
+    Icon: Linkedin,
+  },
+  {
+    label: "X (Twitter)",
+    href: "https://x.com/kerthanak528",
+    Icon: Twitter,
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/career.alerts__/",
+    Icon: Instagram,
+  },
+  {
+    label: "YouTube",
+    href: "http://www.youtube.com/@CareerAlerts-v4l",
+    Icon: Youtube,
+  },
+  {
+    label: "WhatsApp Channel",
+    href: "https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34",
+    Icon: MessageCircle,
+  },
+] as const;
+
 export function Footer() {
   return (
     <footer className="mt-20 border-t border-border/60 bg-muted/40">
@@ -15,12 +43,19 @@ export function Footer() {
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
             Trusted job updates for freshers, interns, and experienced professionals — verified daily.
           </p>
-          <div className="mt-4 flex gap-3 text-muted-foreground">
-            <a href="https://www.linkedin.com/in/kerthana-s/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-foreground"><Linkedin className="h-4 w-4" /></a>
-            <a href="https://x.com/kerthanak528" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="hover:text-foreground"><Twitter className="h-4 w-4" /></a>
-            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-foreground"><Instagram className="h-4 w-4" /></a>
-            <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-foreground"><Youtube className="h-4 w-4" /></a>
-            <a href="https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Channel" className="hover:text-foreground"><MessageCircle className="h-4 w-4" /></a>
+          <div className="mt-4 flex flex-wrap gap-2 text-muted-foreground">
+            {SOCIAL_LINKS.map(({ label, href, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="grid h-9 w-9 place-items-center rounded-full border border-border/70 bg-background/70 transition hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                <Icon className="h-4 w-4" aria-hidden="true" />
+              </a>
+            ))}
           </div>
         </div>
 

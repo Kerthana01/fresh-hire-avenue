@@ -1,5 +1,38 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Instagram, Linkedin, Mail, MessageCircle, Twitter, Youtube } from "lucide-react";
+import { Instagram, Linkedin, MessageCircle, Twitter, Youtube } from "lucide-react";
+
+const CONTACT_LINKS = [
+  {
+    label: "LinkedIn",
+    description: "Connect professionally for collaborations and updates.",
+    href: "https://www.linkedin.com/in/kerthana-s/",
+    Icon: Linkedin,
+  },
+  {
+    label: "X (Twitter)",
+    description: "Follow quick announcements and career updates.",
+    href: "https://x.com/kerthanak528",
+    Icon: Twitter,
+  },
+  {
+    label: "Instagram",
+    description: "Follow Career Alerts for visual job update highlights.",
+    href: "https://www.instagram.com/career.alerts__/",
+    Icon: Instagram,
+  },
+  {
+    label: "YouTube",
+    description: "Subscribe for career guidance and job alert content.",
+    href: "http://www.youtube.com/@CareerAlerts-v4l",
+    Icon: Youtube,
+  },
+  {
+    label: "WhatsApp Channel",
+    description: "Join for instant freshers, internship, and off-campus alerts.",
+    href: "https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34",
+    Icon: MessageCircle,
+  },
+] as const;
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -19,51 +52,28 @@ function ContactPage() {
     <div className="container mx-auto max-w-4xl px-4 py-16">
       <h1 className="text-4xl font-bold tracking-tight">Contact us</h1>
       <p className="mt-4 text-muted-foreground">
-        Have a question, partnership opportunity, recruitment requirement, or job update to share? Feel free to get in touch.
+        Have a question, partnership opportunity, recruitment requirement, or job update to share?
+        Connect with Career Alerts through the official social channels below.
       </p>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <a href="mailto:kerthana.careers@gmail.com" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-hero)] text-primary-foreground"><Mail className="h-4 w-4" /></span>
-          <div>
-            <p className="font-semibold">Email</p>
-            <p className="text-sm text-muted-foreground">kerthana.careers@gmail.com</p>
-          </div>
-        </a>
-        <a href="https://www.linkedin.com/in/kerthana-s/" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-hero)] text-primary-foreground"><Linkedin className="h-4 w-4" /></span>
-          <div>
-            <p className="font-semibold">LinkedIn</p>
-            <p className="text-sm text-muted-foreground">linkedin.com/in/kerthana-s</p>
-          </div>
-        </a>
-        <a href="https://x.com/kerthanak528" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><Twitter className="h-4 w-4" /></span>
-          <div>
-            <p className="font-semibold">X (Twitter)</p>
-            <p className="text-sm text-muted-foreground">Follow on X</p>
-          </div>
-        </a>
-        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><Instagram className="h-4 w-4" /></span>
-          <div>
-            <p className="font-semibold">Instagram</p>
-            <p className="text-sm text-muted-foreground">Follow on Instagram</p>
-          </div>
-        </a>
-        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><Youtube className="h-4 w-4" /></span>
-          <div>
-            <p className="font-semibold">YouTube</p>
-            <p className="text-sm text-muted-foreground">Subscribe on YouTube</p>
-          </div>
-        </a>
-        <a href="https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 hover:border-primary/40">
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-[image:var(--gradient-accent)] text-accent-foreground"><MessageCircle className="h-4 w-4" /></span>
-          <div>
-            <p className="font-semibold">WhatsApp Channel</p>
-            <p className="text-sm text-muted-foreground">Join for instant job alerts</p>
-          </div>
-        </a>
+        {CONTACT_LINKS.map(({ label, description, href, Icon }, index) => (
+          <a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open Career Alerts ${label}`}
+            className="group flex items-start gap-3 rounded-2xl border border-border/70 bg-card p-5 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${index === 0 ? "bg-[image:var(--gradient-hero)] text-primary-foreground" : "bg-[image:var(--gradient-accent)] text-accent-foreground"}`}>
+              <Icon className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span>
+              <span className="block font-semibold text-foreground group-hover:text-primary">{label}</span>
+              <span className="mt-1 block text-sm text-muted-foreground">{description}</span>
+            </span>
+          </a>
+        ))}
       </div>
     </div>
   );
