@@ -44,15 +44,24 @@ export const Route = createFileRoute("/jobs/$slug")({
     const desc = job
       ? (job.meta_description ?? job.job_description.replace(/\s+/g, " ").slice(0, 160))
       : "";
+    const ogTitle = job
+      ? `${job.job_title} at ${job.company_name}${job.location ? ` – ${job.location}` : ""} | Career Alerts`
+      : title;
+    const ogImage = job?.company_logo && /^https?:\/\//i.test(job.company_logo)
+      ? job.company_logo
+      : "https://careeralerts.co.in/og-image.jpg";
     return {
       meta: [
         { title: job?.meta_title ?? title },
         { name: "description", content: desc },
-        { property: "og:title", content: title },
+        { property: "og:title", content: ogTitle },
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
         { property: "og:url", content: `https://careeralerts.co.in/jobs/${params.slug}` },
-        ...(job?.company_logo ? [{ property: "og:image", content: job.company_logo }] : []),
+        { property: "og:image", content: ogImage },
+        { name: "twitter:title", content: ogTitle },
+        { name: "twitter:description", content: desc },
+        { name: "twitter:image", content: ogImage },
       ],
       links: [{ rel: "canonical", href: `https://careeralerts.co.in/jobs/${params.slug}` }],
       scripts: job

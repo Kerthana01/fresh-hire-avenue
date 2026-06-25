@@ -16,6 +16,7 @@ export const Route = createFileRoute("/company/$slug")({
       .join(" ");
     const title = `${name} Jobs & Careers — Latest Openings | Career Alerts`;
     const description = `Browse the latest verified job openings, internships and off-campus drives at ${name}. Updated daily on Career Alerts.`;
+    const image = "https://careeralerts.co.in/og-image.jpg";
     return {
       meta: [
         { title },
@@ -24,6 +25,10 @@ export const Route = createFileRoute("/company/$slug")({
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
         { property: "og:url", content: `https://careeralerts.co.in/company/${params.slug}` },
+        { property: "og:image", content: image },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: image },
       ],
       links: [{ rel: "canonical", href: `https://careeralerts.co.in/company/${params.slug}` }],
     };
