@@ -25,9 +25,9 @@ export const Route = createFileRoute("/categories/$slug")({
       { title: loaderData ? `${loaderData.name} — Career Alerts` : "Category — Career Alerts" },
       { name: "description", content: loaderData?.description ?? "Browse jobs by category." },
       { property: "og:title", content: loaderData?.name ?? "Category" },
-      { property: "og:url", content: `/categories/${params.slug}` },
+      { property: "og:url", content: `https://careeralerts.co.in/categories/${params.slug}` },
     ],
-    links: [{ rel: "canonical", href: `/categories/${params.slug}` }],
+    links: [{ rel: "canonical", href: `https://careeralerts.co.in/categories/${params.slug}` }],
   }),
   notFoundComponent: () => (
     <div className="container mx-auto px-4 py-20 text-center">

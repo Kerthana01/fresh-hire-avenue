@@ -22,9 +22,9 @@ export const Route = createFileRoute("/jobs/")({
       { title: "Browse all jobs — Career Alerts" },
       { name: "description", content: "Browse the latest job openings across freshers, internships, off-campus drives and experienced hiring." },
       { property: "og:title", content: "Browse all jobs — Career Alerts" },
-      { property: "og:url", content: "/jobs" },
+      { property: "og:url", content: "https://careeralerts.co.in/jobs" },
     ],
-    links: [{ rel: "canonical", href: "/jobs" }],
+    links: [{ rel: "canonical", href: "https://careeralerts.co.in/jobs" }],
   }),
   component: JobsPage,
 });

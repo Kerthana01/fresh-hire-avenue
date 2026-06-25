@@ -6,9 +6,9 @@ export const Route = createFileRoute("/privacy")({
       { title: "Privacy Policy — Career Alerts" },
       { name: "description", content: "How Career Alerts handles your data and protects your privacy." },
       { property: "og:title", content: "Privacy Policy — Career Alerts" },
-      { property: "og:url", content: "/privacy" },
+      { property: "og:url", content: "https://careeralerts.co.in/privacy" },
     ],
-    links: [{ rel: "canonical", href: "/privacy" }],
+    links: [{ rel: "canonical", href: "https://careeralerts.co.in/privacy" }],
   }),
   component: () => (
     <div className="container mx-auto max-w-3xl px-4 py-16">

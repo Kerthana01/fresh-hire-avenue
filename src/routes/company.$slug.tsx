@@ -23,9 +23,9 @@ export const Route = createFileRoute("/company/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
-        { property: "og:url", content: `/company/${params.slug}` },
+        { property: "og:url", content: `https://careeralerts.co.in/company/${params.slug}` },
       ],
-      links: [{ rel: "canonical", href: `/company/${params.slug}` }],
+      links: [{ rel: "canonical", href: `https://careeralerts.co.in/company/${params.slug}` }],
     };
   },
   component: CompanyPage,

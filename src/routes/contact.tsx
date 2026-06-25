@@ -40,9 +40,9 @@ export const Route = createFileRoute("/contact")({
       { title: "Contact — Career Alerts" },
       { name: "description", content: "Get in touch with Career Alerts for partnership, listing requests or support." },
       { property: "og:title", content: "Contact — Career Alerts" },
-      { property: "og:url", content: "/contact" },
+      { property: "og:url", content: "https://careeralerts.co.in/contact" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "https://careeralerts.co.in/contact" }],
   }),
   component: ContactPage,
 });
