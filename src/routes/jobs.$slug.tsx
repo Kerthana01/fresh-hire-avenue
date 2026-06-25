@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
+import { jobPostingSchema } from "@/lib/seo-schema";
 
 const jobQuery = (slug: string) => ({
   queryKey: ["job", slug],
@@ -68,26 +69,7 @@ export const Route = createFileRoute("/jobs/$slug")({
         ? [
             {
               type: "application/ld+json",
-              children: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "JobPosting",
-                title: job.job_title,
-                description: job.job_description,
-                datePosted: job.created_at,
-                validThrough: job.last_date,
-                hiringOrganization: {
-                  "@type": "Organization",
-                  name: job.company_name,
-                  logo: job.company_logo,
-                },
-                jobLocation: job.location
-                  ? {
-                      "@type": "Place",
-                      address: { "@type": "PostalAddress", addressLocality: job.location },
-                    }
-                  : undefined,
-                employmentType: job.experience,
-              }),
+              children: JSON.stringify(jobPostingSchema(job)),
             },
           ]
         : [],
