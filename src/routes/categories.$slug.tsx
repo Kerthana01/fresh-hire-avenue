@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { Briefcase } from "lucide-react";
+import { collectionPageSchema } from "@/lib/seo-schema";
 
 const categoryQuery = (slug: string) => ({
   queryKey: ["category", slug],
@@ -33,6 +34,20 @@ export const Route = createFileRoute("/categories/$slug")({
       { name: "twitter:image", content: "https://careeralerts.co.in/og-image.jpg" },
     ],
     links: [{ rel: "canonical", href: `https://careeralerts.co.in/categories/${params.slug}` }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(
+          collectionPageSchema({
+            name: loaderData ? `${loaderData.name} Jobs — Career Alerts` : "Category — Career Alerts",
+            description:
+              loaderData?.description ??
+              `Latest ${loaderData?.name ?? "category"} jobs and openings on Career Alerts.`,
+            url: `https://careeralerts.co.in/categories/${params.slug}`,
+          }),
+        ),
+      },
+    ],
   }),
   notFoundComponent: () => (
     <div className="container mx-auto px-4 py-20 text-center">
