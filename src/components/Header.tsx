@@ -1,6 +1,6 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Briefcase, Menu, Moon, Search, Sun, LogIn, LogOut, LayoutDashboard } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/lib/theme";
@@ -26,11 +26,26 @@ export function Header() {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [q, setQ] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const query = q.trim();
     navigate({ to: "/jobs", search: query ? { q: query } : {} });
+    setMenuOpen(false);
   };
 
   return (
@@ -104,7 +119,7 @@ export function Header() {
             </Button>
           )}
 
-          <Sheet>
+          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" aria-label="Menu" className="lg:hidden">
                 <Menu className="h-5 w-5" />
@@ -116,18 +131,19 @@ export function Header() {
                   <Link
                     key={n.to}
                     to={n.to}
+                    onClick={() => setMenuOpen(false)}
                     className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
                   >
                     {n.label}
                   </Link>
                 ))}
                 {!user && (
-                  <Link to="/auth" className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted">
+                  <Link to="/auth" onClick={() => setMenuOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted">
                     Sign in
                   </Link>
                 )}
                 {isAdmin && (
-                  <Link to="/admin" className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted">
+                  <Link to="/admin" onClick={() => setMenuOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted">
                     Admin
                   </Link>
                 )}
