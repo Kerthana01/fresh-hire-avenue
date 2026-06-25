@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
+import { collectionPageSchema } from "@/lib/seo-schema";
 
 const searchSchema = z.object({
   q: z.string().optional().catch(undefined),
@@ -30,6 +31,19 @@ export const Route = createFileRoute("/jobs/")({
       { name: "twitter:image", content: "https://careeralerts.co.in/og-image.jpg" },
     ],
     links: [{ rel: "canonical", href: "https://careeralerts.co.in/jobs" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(
+          collectionPageSchema({
+            name: "All Jobs — Career Alerts",
+            description:
+              "Browse verified job openings across freshers, internships, off-campus drives and experienced hiring on Career Alerts.",
+            url: "https://careeralerts.co.in/jobs",
+          }),
+        ),
+      },
+    ],
   }),
   component: JobsPage,
 });
