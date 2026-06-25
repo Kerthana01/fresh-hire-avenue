@@ -33,11 +33,15 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Career Alerts — Latest Job Updates for Freshers, Interns & Experienced" },
-      { name: "description", content: "Discover the latest job openings, off-campus drives, internships and work from home opportunities at top product and service companies." },
-      { property: "og:title", content: "Career Alerts — Latest Job Updates" },
-      { property: "og:description", content: "Daily curated job alerts for freshers, interns and experienced professionals." },
+      { title: "Career Alerts – Freshers Jobs, Internships & Off-Campus Drives" },
+      { name: "description", content: "Find verified freshers jobs, internships, off-campus drives and hiring opportunities from top companies across India." },
+      { property: "og:title", content: "Career Alerts – Freshers Jobs, Internships & Off-Campus Drives" },
+      { property: "og:description", content: "Find verified freshers jobs, internships, off-campus drives and hiring opportunities from top companies across India." },
       { property: "og:url", content: "https://careeralerts.co.in/" },
+      { property: "og:image", content: "https://careeralerts.co.in/og-image.jpg" },
+      { name: "twitter:title", content: "Career Alerts – Freshers Jobs, Internships & Off-Campus Drives" },
+      { name: "twitter:description", content: "Find verified freshers jobs, internships, off-campus drives and hiring opportunities from top companies across India." },
+      { name: "twitter:image", content: "https://careeralerts.co.in/og-image.jpg" },
     ],
     links: [
       { rel: "canonical", href: "https://careeralerts.co.in/" },
