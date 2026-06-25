@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
 import { CompanyLogo } from "@/components/CompanyLogo";
+import { collectionPageSchema, SITE_URL, SITE_NAME } from "@/lib/seo-schema";
 
 export const Route = createFileRoute("/company/$slug")({
   head: ({ params }) => {
@@ -31,6 +32,33 @@ export const Route = createFileRoute("/company/$slug")({
         { name: "twitter:image", content: image },
       ],
       links: [{ rel: "canonical", href: `https://careeralerts.co.in/company/${params.slug}` }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(
+            collectionPageSchema({
+              name: title,
+              description,
+              url: `${SITE_URL}/company/${params.slug}`,
+            }),
+          ),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name,
+            url: `${SITE_URL}/company/${params.slug}`,
+            sameAs: `${SITE_URL}/company/${params.slug}`,
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `${SITE_URL}/company/${params.slug}`,
+            },
+            publisher: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+          }),
+        },
+      ],
     };
   },
   component: CompanyPage,
