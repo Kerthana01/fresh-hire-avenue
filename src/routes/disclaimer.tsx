@@ -6,9 +6,9 @@ export const Route = createFileRoute("/disclaimer")({
       { title: "Disclaimer — Career Alerts" },
       { name: "description", content: "Disclaimer for Career Alerts job listings." },
       { property: "og:title", content: "Disclaimer — Career Alerts" },
-      { property: "og:url", content: "/disclaimer" },
+      { property: "og:url", content: "https://careeralerts.co.in/disclaimer" },
     ],
-    links: [{ rel: "canonical", href: "/disclaimer" }],
+    links: [{ rel: "canonical", href: "https://careeralerts.co.in/disclaimer" }],
   }),
   component: () => (
     <div className="container mx-auto max-w-3xl px-4 py-16">

@@ -6,9 +6,9 @@ export const Route = createFileRoute("/about")({
       { title: "About — Career Alerts" },
       { name: "description", content: "Career Alerts is a curated job updates portal for freshers, interns and experienced professionals." },
       { property: "og:title", content: "About — Career Alerts" },
-      { property: "og:url", content: "/about" },
+      { property: "og:url", content: "https://careeralerts.co.in/about" },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: "https://careeralerts.co.in/about" }],
   }),
   component: AboutPage,
 });

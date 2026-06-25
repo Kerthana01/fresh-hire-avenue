@@ -51,10 +51,10 @@ export const Route = createFileRoute("/jobs/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/jobs/${params.slug}` },
+        { property: "og:url", content: `https://careeralerts.co.in/jobs/${params.slug}` },
         ...(job?.company_logo ? [{ property: "og:image", content: job.company_logo }] : []),
       ],
-      links: [{ rel: "canonical", href: `/jobs/${params.slug}` }],
+      links: [{ rel: "canonical", href: `https://careeralerts.co.in/jobs/${params.slug}` }],
       scripts: job
         ? [
             {

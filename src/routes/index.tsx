@@ -37,10 +37,10 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Discover the latest job openings, off-campus drives, internships and work from home opportunities at top product and service companies." },
       { property: "og:title", content: "Career Alerts — Latest Job Updates" },
       { property: "og:description", content: "Daily curated job alerts for freshers, interns and experienced professionals." },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://careeralerts.co.in/" },
     ],
     links: [
-      { rel: "canonical", href: "/" },
+      { rel: "canonical", href: "https://careeralerts.co.in/" },
     ],
   }),
   component: Index,
