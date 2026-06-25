@@ -29,6 +29,7 @@ import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
+import { websiteSchema } from "@/lib/seo-schema";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -45,6 +46,12 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://careeralerts.co.in/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(websiteSchema()),
+      },
     ],
   }),
   component: Index,
