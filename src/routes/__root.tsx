@@ -17,6 +17,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
+import { organizationSchema } from "@/lib/seo-schema";
 
 function NotFoundComponent() {
   return (
@@ -105,12 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "Career Alerts",
-          description: "Job updates portal for freshers, interns and experienced hires.",
-        }),
+        children: JSON.stringify(organizationSchema()),
       },
     ],
   }),
