@@ -93,8 +93,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Career Alerts — Freshers, Internships & Off-Campus Jobs" },
       { name: "twitter:description", content: "Daily job updates for freshers, interns, off-campus drives and experienced hiring across top product and service companies." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a55c2c96-7483-495a-9c5e-7993b1edca2e/id-preview-8899f70a--915f6437-25a7-4414-be7f-63814e2f320b.lovable.app-1782289968767.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a55c2c96-7483-495a-9c5e-7993b1edca2e/id-preview-8899f70a--915f6437-25a7-4414-be7f-63814e2f320b.lovable.app-1782289968767.png" },
+      { property: "og:image", content: "https://careeralerts.co.in/og-image.jpg" },
+      { name: "twitter:image", content: "https://careeralerts.co.in/og-image.jpg" },
     ],
     links: [
       {
