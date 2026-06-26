@@ -132,6 +132,40 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    if (!import.meta.env.PROD) return;
+    if (typeof window === "undefined") return;
+    if (isGaExcludedPath(pathname)) return;
+
+    const w = window as unknown as {
+      dataLayer?: unknown[];
+      gtag?: (...args: unknown[]) => void;
+      __gaLoaded?: boolean;
+    };
+
+    if (!w.__gaLoaded) {
+      w.__gaLoaded = true;
+      w.dataLayer = w.dataLayer || [];
+      w.gtag = function gtag(...args: unknown[]) {
+        (w.dataLayer as unknown[]).push(args);
+      };
+      w.gtag("js", new Date());
+      w.gtag("config", GA_MEASUREMENT_ID, { send_page_view: false });
+
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+      document.head.appendChild(s);
+    }
+
+    w.gtag?.("event", "page_view", {
+      page_path: pathname + window.location.search,
+      page_location: window.location.href,
+      page_title: document.title,
+    });
+  }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
