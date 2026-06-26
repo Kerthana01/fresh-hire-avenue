@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
 import { CompanyLogo } from "@/components/CompanyLogo";
-import { collectionPageSchema, SITE_URL, SITE_NAME } from "@/lib/seo-schema";
+import { collectionPageSchema, breadcrumbSchema, SITE_URL, SITE_NAME } from "@/lib/seo-schema";
 
 export const Route = createFileRoute("/company/$slug")({
   head: ({ params }) => {
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/company/$slug")({
       .split("-")
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
-    const title = `${name} Jobs & Careers — Latest Openings | Career Alerts`;
+    const title = `${name} Jobs & Careers | Career Alerts`;
     const description = `Browse the latest verified job openings, internships and off-campus drives at ${name}. Updated daily on Career Alerts.`;
     const image = "https://careeralerts.co.in/og-image.jpg";
     return {
@@ -57,6 +57,16 @@ export const Route = createFileRoute("/company/$slug")({
             },
             publisher: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
           }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(
+            breadcrumbSchema([
+              { name: "Home", url: `${SITE_URL}/` },
+              { name: "Jobs", url: `${SITE_URL}/jobs` },
+              { name, url: `${SITE_URL}/company/${params.slug}` },
+            ]),
+          ),
         },
       ],
     };

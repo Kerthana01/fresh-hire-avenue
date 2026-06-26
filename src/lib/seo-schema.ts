@@ -81,6 +81,19 @@ export function collectionPageSchema(input: {
   return schema;
 }
 
+export function breadcrumbSchema(items: { name: string; url: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      item: it.url,
+    })),
+  };
+}
+
 // Detect employmentType from text. Google accepts:
 // FULL_TIME | PART_TIME | CONTRACTOR | TEMPORARY | INTERN | VOLUNTEER | PER_DIEM | OTHER
 export function detectEmploymentType(...sources: (string | null | undefined)[]): string[] {
