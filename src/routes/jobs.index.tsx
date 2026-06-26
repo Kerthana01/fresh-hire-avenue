@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
-import { collectionPageSchema } from "@/lib/seo-schema";
+import { collectionPageSchema, safeJsonLd } from "@/lib/seo-schema";
 
 const searchSchema = z.object({
   q: z.string().optional().catch(undefined),
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/jobs/")({
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify(
+        children: safeJsonLd(
           collectionPageSchema({
             name: "All Jobs — Career Alerts",
             description:

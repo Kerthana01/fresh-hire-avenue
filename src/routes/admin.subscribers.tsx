@@ -19,7 +19,16 @@ function SubscribersPage() {
 
   const exportCsv = () => {
     if (!subs.data) return;
-    const csv = ["email,subscribed_at", ...subs.data.map((s) => `${s.email},${s.created_at}`)].join("\n");
+    // Neutralise CSV/spreadsheet formula injection: any cell beginning with
+    // =, +, -, @, tab, or CR is treated as a formula by Excel/Calc.
+    const safeCell = (v: string) => {
+      const s = String(v ?? "");
+      return /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
+    };
+    const csv = [
+      "email,subscribed_at",
+      ...subs.data.map((s) => `${safeCell(s.email)},${safeCell(s.created_at)}`),
+    ].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

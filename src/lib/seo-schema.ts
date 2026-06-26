@@ -14,6 +14,25 @@ export const SOCIAL_PROFILES = [
   "https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34",
 ];
 
+// Escape HTML/script-breaking sequences in a value destined for a
+// <script type="application/ld+json"> tag. JSON.stringify does not escape
+// `<`, `>`, or `/`, so a value containing `</script>` would terminate the
+// script element in the browser's HTML parser and enable XSS.
+export function safeJsonLd(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/<\/script/gi, "<\\/script")
+    .replace(/<!--/g, "<\\!--");
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export function organizationSchema() {
   return {
     "@context": "https://schema.org",
@@ -163,7 +182,7 @@ export function jobPostingSchema(job: {
     "@context": "https://schema.org",
     "@type": "JobPosting",
     title: job.job_title,
-    description: `<p>${job.job_description.replace(/\n+/g, "</p><p>")}</p>`,
+    description: `<p>${escapeHtml(job.job_description).replace(/\n+/g, "</p><p>")}</p>`,
     datePosted: new Date(job.created_at).toISOString(),
     employmentType,
     identifier: {
