@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -18,6 +19,10 @@ import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
 import { organizationSchema, safeJsonLd } from "@/lib/seo-schema";
+
+const GA_MEASUREMENT_ID = "G-4WMDBM31QK";
+const isGaExcludedPath = (path: string) =>
+  path.startsWith("/admin") || path.startsWith("/auth");
 
 function NotFoundComponent() {
   return (
