@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
 import { CompanyLogo } from "@/components/CompanyLogo";
-import { collectionPageSchema, breadcrumbSchema, SITE_URL, SITE_NAME } __TMP__from "@/lib/seo-schema";
+import { collectionPageSchema, breadcrumbSchema, SITE_URL, SITE_NAME, safeJsonLd } from "@/lib/seo-schema";
 
 export const Route = createFileRoute("/company/$slug")({
   head: ({ params }) => {

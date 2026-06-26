@@ -29,7 +29,7 @@ import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
-import { websiteSchema } __TMP__from "@/lib/seo-schema";
+import { websiteSchema, safeJsonLd } from "@/lib/seo-schema";
 
 export const Route = createFileRoute("/")({
   head: () => ({

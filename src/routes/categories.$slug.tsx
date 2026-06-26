@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { Briefcase } from "lucide-react";
-import { collectionPageSchema } __TMP__from "@/lib/seo-schema";
+import { collectionPageSchema, safeJsonLd } from "@/lib/seo-schema";
 
 const categoryQuery = (slug: string) => ({
   queryKey: ["category", slug],

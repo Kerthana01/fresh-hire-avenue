@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
-import { collectionPageSchema } __TMP__from "@/lib/seo-schema";
+import { collectionPageSchema, safeJsonLd } from "@/lib/seo-schema";
 
 const searchSchema = z.object({
   q: z.string().optional().catch(undefined),

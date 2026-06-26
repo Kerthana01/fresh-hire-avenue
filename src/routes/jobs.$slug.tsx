@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
-import { jobPostingSchema, breadcrumbSchema, SITE_URL } __TMP__from "@/lib/seo-schema";
+import { jobPostingSchema, breadcrumbSchema, SITE_URL, safeJsonLd } from "@/lib/seo-schema";
 
 const jobQuery = (slug: string) => ({
   queryKey: ["job", slug],

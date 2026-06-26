@@ -17,7 +17,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
-import { organizationSchema } __TMP__from "@/lib/seo-schema";
+import { organizationSchema, safeJsonLd } from "@/lib/seo-schema";
 
 function NotFoundComponent() {
   return (
