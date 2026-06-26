@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
-import { jobPostingSchema, breadcrumbSchema, SITE_URL, safeJsonLd } from "@/lib/seo-schema";
+import { jobPostingSchema, breadcrumbSchema, faqPageSchema, SITE_URL, safeJsonLd } from "@/lib/seo-schema";
 
 const jobQuery = (slug: string) => ({
   queryKey: ["job", slug],
@@ -51,6 +51,30 @@ export const Route = createFileRoute("/jobs/$slug")({
     const ogImage = job?.company_logo && /^https?:\/\//i.test(job.company_logo)
       ? job.company_logo
       : "https://careeralerts.co.in/og-image.jpg";
+    const faqItems = job
+      ? [
+          {
+            q: `What is the role offered by ${job.company_name}?`,
+            a: `${job.company_name} is hiring for the role of ${job.job_title}${job.location ? ` in ${job.location}` : ""}.`,
+          },
+          {
+            q: "Who can apply for this job?",
+            a:
+              job.eligibility ||
+              `Candidates meeting the qualification${job.qualification ? ` (${job.qualification})` : ""}${job.experience ? ` and experience requirement (${job.experience})` : ""} are eligible to apply.`,
+          },
+          {
+            q: "What is the last date to apply?",
+            a: job.last_date
+              ? `The last date to apply is ${format(new Date(job.last_date), "PPP")}.`
+              : "Apply as soon as possible — the role may close once positions are filled.",
+          },
+          {
+            q: "How do I apply for this job?",
+            a: `Click the "Apply for this Job" button on this page to be redirected to the official application link of ${job.company_name}.`,
+          },
+        ]
+      : [];
     return {
       meta: [
         { title: job?.meta_title ?? title },
@@ -80,6 +104,10 @@ export const Route = createFileRoute("/jobs/$slug")({
                   { name: job.job_title, url: `${SITE_URL}/jobs/${params.slug}` },
                 ]),
               ),
+            },
+            {
+              type: "application/ld+json",
+              children: safeJsonLd(faqPageSchema(faqItems)),
             },
           ]
         : [],
