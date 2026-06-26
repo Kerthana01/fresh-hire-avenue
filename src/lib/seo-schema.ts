@@ -113,6 +113,21 @@ export function breadcrumbSchema(items: { name: string; url: string }[]) {
   };
 }
 
+export function faqPageSchema(items: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((it) => ({
+      "@type": "Question",
+      name: it.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: it.a,
+      },
+    })),
+  };
+}
+
 // Detect employmentType from text. Google accepts:
 // FULL_TIME | PART_TIME | CONTRACTOR | TEMPORARY | INTERN | VOLUNTEER | PER_DIEM | OTHER
 export function detectEmploymentType(...sources: (string | null | undefined)[]): string[] {
