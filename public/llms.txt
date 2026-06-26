@@ -1,0 +1,16 @@
+# Career Alerts
+
+> Career Alerts is an India-focused job updates portal with verified freshers jobs, internships, off-campus drives and experienced hiring opportunities from top companies, updated daily.
+
+## Pages
+
+- [Home](/): Latest verified jobs, trending roles, featured companies and categories.
+- [Jobs](/jobs): Searchable job listings with filters for category, role, location and experience.
+- [About](/about): How Career Alerts curates and verifies job postings.
+- [Contact](/contact): Reach the editorial team via email, LinkedIn, X, Instagram and WhatsApp Channel.
+
+## Optional
+
+- [Privacy Policy](/privacy)
+- [Terms of Service](/terms)
+- [Disclaimer](/disclaimer)

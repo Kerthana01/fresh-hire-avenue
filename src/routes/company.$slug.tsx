@@ -15,7 +15,7 @@ export const Route = createFileRoute("/company/$slug")({
       .split("-")
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
-    const title = `${name} Jobs & Careers — Latest Openings | Career Alerts`;
+    const title = `${name} Jobs & Careers | Career Alerts`;
     const description = `Browse the latest verified job openings, internships and off-campus drives at ${name}. Updated daily on Career Alerts.`;
     const image = "https://careeralerts.co.in/og-image.jpg";
     return {

@@ -34,14 +34,14 @@ import { websiteSchema } from "@/lib/seo-schema";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Career Alerts – Freshers Jobs, Internships & Off-Campus Drives" },
+      { title: "Career Alerts – Freshers Jobs & Internships India" },
       { name: "description", content: "Find verified freshers jobs, internships, off-campus drives and hiring opportunities from top companies across India." },
-      { property: "og:title", content: "Career Alerts – Freshers Jobs, Internships & Off-Campus Drives" },
-      { property: "og:description", content: "Find verified freshers jobs, internships, off-campus drives and hiring opportunities from top companies across India." },
+      { property: "og:title", content: "Career Alerts – Freshers Jobs & Internships India" },
+      { property: "og:description", content: "Verified freshers jobs, internships and off-campus drives from top Indian companies, updated daily." },
       { property: "og:url", content: "https://careeralerts.co.in/" },
       { property: "og:image", content: "https://careeralerts.co.in/og-image.jpg" },
-      { name: "twitter:title", content: "Career Alerts – Freshers Jobs, Internships & Off-Campus Drives" },
-      { name: "twitter:description", content: "Find verified freshers jobs, internships, off-campus drives and hiring opportunities from top companies across India." },
+      { name: "twitter:title", content: "Career Alerts – Freshers Jobs & Internships India" },
+      { name: "twitter:description", content: "Verified freshers jobs, internships and off-campus drives from top Indian companies, updated daily." },
       { name: "twitter:image", content: "https://careeralerts.co.in/og-image.jpg" },
     ],
     links: [

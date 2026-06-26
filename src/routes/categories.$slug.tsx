@@ -24,7 +24,7 @@ export const Route = createFileRoute("/categories/$slug")({
   head: ({ loaderData, params }) => ({
     meta: [
       { title: loaderData ? `${loaderData.name} — Career Alerts` : "Category — Career Alerts" },
-      { name: "description", content: loaderData?.description ?? "Browse jobs by category." },
+      { name: "description", content: loaderData?.description ?? `Latest ${loaderData?.name ?? ""} jobs, internships and off-campus drives from top companies, updated daily on Career Alerts.` },
       { property: "og:title", content: loaderData ? `${loaderData.name} Jobs — Career Alerts` : "Category — Career Alerts" },
       { property: "og:description", content: loaderData?.description ?? `Latest ${loaderData?.name ?? "category"} jobs and openings curated on Career Alerts.` },
       { property: "og:url", content: `https://careeralerts.co.in/categories/${params.slug}` },
