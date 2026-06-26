@@ -96,6 +96,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:description", content: "Daily job updates for freshers, interns, off-campus drives and experienced hiring across top product and service companies." },
       { property: "og:image", content: "https://careeralerts.co.in/og-image.jpg" },
       { name: "twitter:image", content: "https://careeralerts.co.in/og-image.jpg" },
+      { name: "google-site-verification", content: "J6OmqDzP5GueBu6v2TSe0T_TxuNMkqvuTz2MrgyUn68" },
     ],
     links: [
       {
