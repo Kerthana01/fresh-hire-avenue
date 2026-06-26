@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
-import { jobPostingSchema, breadcrumbSchema, SITE_URL } from "@/lib/seo-schema";
+import { jobPostingSchema, breadcrumbSchema, SITE_URL } __TMP__from "@/lib/seo-schema";
 
 const jobQuery = (slug: string) => ({
   queryKey: ["job", slug],
@@ -69,11 +69,11 @@ export const Route = createFileRoute("/jobs/$slug")({
         ? [
             {
               type: "application/ld+json",
-              children: JSON.stringify(jobPostingSchema(job)),
+              children: safeJsonLd(jobPostingSchema(job)),
             },
             {
               type: "application/ld+json",
-              children: JSON.stringify(
+              children: safeJsonLd(
                 breadcrumbSchema([
                   { name: "Home", url: `${SITE_URL}/` },
                   { name: "Jobs", url: `${SITE_URL}/jobs` },

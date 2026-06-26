@@ -29,7 +29,7 @@ import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
-import { websiteSchema } from "@/lib/seo-schema";
+import { websiteSchema } __TMP__from "@/lib/seo-schema";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -50,7 +50,7 @@ export const Route = createFileRoute("/")({
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify(websiteSchema()),
+        children: safeJsonLd(websiteSchema()),
       },
     ],
   }),

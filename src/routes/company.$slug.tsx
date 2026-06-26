@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
 import { CompanyLogo } from "@/components/CompanyLogo";
-import { collectionPageSchema, breadcrumbSchema, SITE_URL, SITE_NAME } from "@/lib/seo-schema";
+import { collectionPageSchema, breadcrumbSchema, SITE_URL, SITE_NAME } __TMP__from "@/lib/seo-schema";
 
 export const Route = createFileRoute("/company/$slug")({
   head: ({ params }) => {
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/company/$slug")({
       scripts: [
         {
           type: "application/ld+json",
-          children: JSON.stringify(
+          children: safeJsonLd(
             collectionPageSchema({
               name: title,
               description,
@@ -45,7 +45,7 @@ export const Route = createFileRoute("/company/$slug")({
         },
         {
           type: "application/ld+json",
-          children: JSON.stringify({
+          children: safeJsonLd({
             "@context": "https://schema.org",
             "@type": "Organization",
             name,
@@ -60,7 +60,7 @@ export const Route = createFileRoute("/company/$slug")({
         },
         {
           type: "application/ld+json",
-          children: JSON.stringify(
+          children: safeJsonLd(
             breadcrumbSchema([
               { name: "Home", url: `${SITE_URL}/` },
               { name: "Jobs", url: `${SITE_URL}/jobs` },
