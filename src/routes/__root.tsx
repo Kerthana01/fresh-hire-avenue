@@ -148,8 +148,11 @@ function RootComponent() {
     if (!w.__gaLoaded) {
       w.__gaLoaded = true;
       w.dataLayer = w.dataLayer || [];
-      w.gtag = function gtag(...args: unknown[]) {
-        (w.dataLayer as unknown[]).push(args);
+      // Standard gtag snippet — must push `arguments` (not a rest array)
+      // so Google's tag library receives the expected arguments-shaped object.
+      w.gtag = function gtag() {
+        // eslint-disable-next-line prefer-rest-params
+        (w.dataLayer as unknown[]).push(arguments);
       };
       w.gtag("js", new Date());
       w.gtag("config", GA_MEASUREMENT_ID, { send_page_view: false });
@@ -161,6 +164,7 @@ function RootComponent() {
     }
 
     w.gtag?.("event", "page_view", {
+      send_to: GA_MEASUREMENT_ID,
       page_path: pathname + window.location.search,
       page_location: window.location.href,
       page_title: document.title,
