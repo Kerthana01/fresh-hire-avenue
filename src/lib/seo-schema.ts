@@ -153,6 +153,14 @@ export function parseSalary(
 ): { currency: string; min: number; max: number; unit: "YEAR" | "MONTH" | "HOUR" } | null {
   if (!raw) return null;
   const s = raw.replace(/,/g, "");
+  // Skip values that are clearly not officially published / are estimates.
+  if (
+    /not\s*disclosed|undisclosed|not\s*specified|negotiable|best\s*in\s*industry|as\s*per\s*(company|industry|norms)|depend(s|ing)|competitive|market\s*standard|estimat/i.test(
+      s,
+    )
+  ) {
+    return null;
+  }
   const currency = /\$/.test(s) ? "USD" : /€/.test(s) ? "EUR" : /£/.test(s) ? "GBP" : "INR";
   const lpa = /lpa|lakh|per\s*annum|\/\s*year|annually/i.test(s);
   const lakh = /lakh|lpa/i.test(s);
@@ -168,6 +176,58 @@ export function parseSalary(
   }
   const unit: "YEAR" | "MONTH" | "HOUR" = hourly ? "HOUR" : monthly ? "MONTH" : lpa ? "YEAR" : "YEAR";
   return { currency, min, max, unit };
+}
+
+// Convert a free-text experience requirement (e.g. "Freshers", "0-2 years",
+// "2+ yrs", "Minimum 3 years") into Google's structured
+// OccupationalExperienceRequirements with monthsOfExperience. Returns null
+// when no numeric experience can be derived.
+export function parseExperienceMonths(raw?: string | null): number | null {
+  if (!raw) return null;
+  const s = raw.toLowerCase().trim();
+  if (!s) return null;
+  if (/fresher|fresh\s*graduate|entry[\s-]*level|no\s*experience|0\s*(?:year|yr)/i.test(s)) {
+    return 0;
+  }
+  const nums = Array.from(s.matchAll(/(\d+(?:\.\d+)?)/g)).map((m) => parseFloat(m[1]));
+  if (nums.length === 0) return null;
+  const years = Math.min(...nums); // Google asks for the minimum required
+  if (!Number.isFinite(years) || years < 0) return null;
+  return Math.round(years * 12);
+}
+
+// Extract { addressLocality, addressRegion } from a free-text location like
+// "Bengaluru, Karnataka" or "Remote, India". Returns only the fields we can
+// verify from the input — never fabricates streetAddress / postalCode.
+function parseAddress(location: string): { addressLocality?: string; addressRegion?: string } {
+  const parts = location
+    .split(/[,/|]+/)
+    .map((p) => p.trim())
+    .filter((p) => p && !/^india$/i.test(p) && !/^remote|wfh|work\s*from\s*home|anywhere$/i.test(p));
+  if (parts.length === 0) return {};
+  if (parts.length === 1) return { addressLocality: parts[0] };
+  return { addressLocality: parts[0], addressRegion: parts[1] };
+}
+
+// Strip undefined / null / empty-string / empty-object values so the emitted
+// JSON-LD only contains verifiable fields.
+function pruneSchema<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((v) => pruneSchema(v)).filter((v) => v !== undefined) as unknown as T;
+  }
+  if (value && typeof value === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      const pv = pruneSchema(v);
+      if (pv === undefined || pv === null) continue;
+      if (typeof pv === "string" && pv.trim() === "") continue;
+      if (typeof pv === "object" && !Array.isArray(pv) && Object.keys(pv as object).length === 0) continue;
+      if (Array.isArray(pv) && pv.length === 0) continue;
+      out[k] = pv;
+    }
+    return out as T;
+  }
+  return value;
 }
 
 export function jobPostingSchema(job: {
@@ -227,22 +287,25 @@ export function jobPostingSchema(job: {
       name: "IN",
     };
   } else if (job.location) {
+    // Only emit address fields we can verify from the source text — never
+    // synthesize streetAddress or postalCode.
+    const parsed = parseAddress(job.location);
     schema.jobLocation = {
       "@type": "Place",
       address: {
         "@type": "PostalAddress",
-        addressLocality: job.location,
+        ...parsed,
         addressCountry: "IN",
       },
     };
   } else {
-    // Google requires either jobLocation or applicantLocationRequirements
-    schema.jobLocation = {
-      "@type": "Place",
-      address: { "@type": "PostalAddress", addressCountry: "IN" },
-    };
+    // Google requires either jobLocation or applicantLocationRequirements.
+    schema.applicantLocationRequirements = { "@type": "Country", name: "IN" };
   }
 
+  // Only publish baseSalary when the employer's salary text contains a real
+  // numeric range/value (parseSalary returns null for "Not disclosed",
+  // "Negotiable", "Best in industry", estimates, etc.).
   if (salary) {
     schema.baseSalary = {
       "@type": "MonetaryAmount",
@@ -257,8 +320,19 @@ export function jobPostingSchema(job: {
   }
 
   if (job.qualification) schema.educationRequirements = job.qualification;
-  if (job.experience) schema.experienceRequirements = job.experience;
+  if (job.experience) {
+    const months = parseExperienceMonths(job.experience);
+    if (months !== null) {
+      // Schema.org compliant structured value. Original free text remains
+      // visible on the page for users.
+      schema.experienceRequirements = {
+        "@type": "OccupationalExperienceRequirements",
+        monthsOfExperience: months,
+      };
+      if (months === 0) schema.experienceInPlaceOfEducation = false;
+    }
+  }
   if (job.skills) schema.skills = job.skills;
 
-  return schema;
+  return pruneSchema(schema);
 }
