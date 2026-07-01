@@ -182,7 +182,6 @@ function RootComponent() {
     });
   }, [pathname]);
 
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
