@@ -117,9 +117,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const showAdSense =
+    import.meta.env.PROD && !isGaExcludedPath(pathname);
+
   return (
     <html lang="en">
       <head>
+        {showAdSense && (
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4059609532130306"
+            crossOrigin="anonymous"
+          />
+        )}
         <HeadContent />
       </head>
       <body>
@@ -169,23 +180,6 @@ function RootComponent() {
       page_location: window.location.href,
       page_title: document.title,
     });
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!import.meta.env.PROD) return;
-    if (typeof window === "undefined") return;
-    if (isGaExcludedPath(pathname)) return;
-
-    const w = window as unknown as { __adsenseLoaded?: boolean };
-    if (w.__adsenseLoaded) return;
-    w.__adsenseLoaded = true;
-
-    const s = document.createElement("script");
-    s.async = true;
-    s.src =
-      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4059609532130306";
-    s.crossOrigin = "anonymous";
-    document.head.appendChild(s);
   }, [pathname]);
 
   return (
