@@ -117,9 +117,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const showAdSense =
+    import.meta.env.PROD && !isGaExcludedPath(pathname);
+
   return (
     <html lang="en">
       <head>
+        {showAdSense && (
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4059609532130306"
+            crossOrigin="anonymous"
+          />
+        )}
         <HeadContent />
       </head>
       <body>
