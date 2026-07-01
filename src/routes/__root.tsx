@@ -171,6 +171,23 @@ function RootComponent() {
     });
   }, [pathname]);
 
+  useEffect(() => {
+    if (!import.meta.env.PROD) return;
+    if (typeof window === "undefined") return;
+    if (isGaExcludedPath(pathname)) return;
+
+    const w = window as unknown as { __adsenseLoaded?: boolean };
+    if (w.__adsenseLoaded) return;
+    w.__adsenseLoaded = true;
+
+    const s = document.createElement("script");
+    s.async = true;
+    s.src =
+      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4059609532130306";
+    s.crossOrigin = "anonymous";
+    document.head.appendChild(s);
+  }, [pathname]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
