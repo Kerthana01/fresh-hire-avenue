@@ -51,6 +51,7 @@ export type Database = {
           company_logo: string | null
           company_name: string
           created_at: string
+          custom_sections: Json
           eligibility: string | null
           experience: string | null
           id: string
@@ -78,6 +79,7 @@ export type Database = {
           company_logo?: string | null
           company_name: string
           created_at?: string
+          custom_sections?: Json
           eligibility?: string | null
           experience?: string | null
           id?: string
@@ -105,6 +107,7 @@ export type Database = {
           company_logo?: string | null
           company_name?: string
           created_at?: string
+          custom_sections?: Json
           eligibility?: string | null
           experience?: string | null
           id?: string
