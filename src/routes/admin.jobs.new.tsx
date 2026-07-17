@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { JobForm, emptyJob, type JobFormValues } from "@/components/JobForm";
 import { toast } from "sonner";
 import { uniqueSlug } from "@/lib/slug";
+import type { Json } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/admin/jobs/new")({
   component: NewJobPage,
@@ -37,6 +38,7 @@ function NewJobPage() {
       is_published: v.is_published,
       meta_title: v.meta_title || null,
       meta_description: v.meta_description || null,
+      custom_sections: v.custom_sections as unknown as Json,
     };
     const { error } = await supabase.from("jobs").insert(payload);
     setBusy(false);
