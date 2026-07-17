@@ -78,7 +78,7 @@ function EditJobPage() {
         is_published: v.is_published,
         meta_title: v.meta_title || null,
         meta_description: v.meta_description || null,
-        custom_sections: v.custom_sections,
+        custom_sections: v.custom_sections as unknown as Json,
       })
       .eq("id", id);
     setBusy(false);
