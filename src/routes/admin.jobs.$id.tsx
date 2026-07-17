@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { JobForm, type JobFormValues } from "@/components/JobForm";
 import { toast } from "sonner";
+import { normalizeSections } from "@/components/SectionsBuilder";
 
 export const Route = createFileRoute("/admin/jobs/$id")({
   component: EditJobPage,
@@ -47,6 +48,7 @@ function EditJobPage() {
         is_published: job.data.is_published,
         meta_title: job.data.meta_title ?? "",
         meta_description: job.data.meta_description ?? "",
+        custom_sections: normalizeSections(job.data.custom_sections),
       }
     : undefined;
 
@@ -76,6 +78,7 @@ function EditJobPage() {
         is_published: v.is_published,
         meta_title: v.meta_title || null,
         meta_description: v.meta_description || null,
+        custom_sections: v.custom_sections,
       })
       .eq("id", id);
     setBusy(false);
