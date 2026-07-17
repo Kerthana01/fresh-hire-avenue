@@ -10,6 +10,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { slugify, uniqueSlug } from "@/lib/slug";
+import { SectionsBuilder, type CustomSection } from "@/components/SectionsBuilder";
 
 export interface JobFormValues {
   id?: string;
@@ -34,6 +35,7 @@ export interface JobFormValues {
   is_published: boolean;
   meta_title: string;
   meta_description: string;
+  custom_sections: CustomSection[];
 }
 
 export const emptyJob: JobFormValues = {
@@ -43,6 +45,7 @@ export const emptyJob: JobFormValues = {
   apply_link: "", category_id: null, last_date: "",
   is_featured: false, is_trending: false, is_published: true,
   meta_title: "", meta_description: "",
+  custom_sections: [],
 };
 
 interface Props {
@@ -118,6 +121,8 @@ export function JobForm({ initial, onSubmit, submitting }: Props) {
       <Field label="Selection process">
         <Textarea rows={3} value={v.selection_process} onChange={(e) => set("selection_process", e.target.value)} />
       </Field>
+
+      <SectionsBuilder value={v.custom_sections} onChange={(next) => set("custom_sections", next)} />
 
       <div className="rounded-xl border border-border/70 p-4">
         <h3 className="mb-3 text-sm font-semibold">Visibility & SEO</h3>
