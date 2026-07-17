@@ -245,6 +245,7 @@ function JobDetailPage() {
               ...(job.eligibility ? [{ id: "eligibility", label: "Eligibility Criteria" }] : []),
               ...(job.salary ? [{ id: "salary", label: "Salary Details" }] : []),
               ...(job.selection_process ? [{ id: "selection", label: "Selection Process" }] : []),
+              ...customSections.map((s, i) => ({ id: `custom-${i}`, label: s.title })),
               { id: "faq", label: "FAQ" },
               { id: "apply", label: "Apply" },
             ]}
