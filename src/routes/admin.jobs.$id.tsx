@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { JobForm, type JobFormValues } from "@/components/JobForm";
 import { toast } from "sonner";
 import { normalizeSections } from "@/components/SectionsBuilder";
+import type { Json } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/admin/jobs/$id")({
   component: EditJobPage,
