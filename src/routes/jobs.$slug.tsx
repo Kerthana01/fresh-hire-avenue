@@ -19,6 +19,8 @@ import { JobCard, type JobCardData } from "@/components/JobCard";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
 import { jobPostingSchema, breadcrumbSchema, faqPageSchema, SITE_URL, safeJsonLd } from "@/lib/seo-schema";
+import { normalizeSections } from "@/components/SectionsBuilder";
+import DOMPurify from "dompurify";
 
 const jobQuery = (slug: string) => ({
   queryKey: ["job", slug],
@@ -174,6 +176,10 @@ function JobDetailPage() {
 
   if (!job) return null;
 
+  const customSections = normalizeSections(job.custom_sections).filter(
+    (s) => s.title.trim() && stripHtml(s.content).trim(),
+  );
+
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const share = (target: "whatsapp" | "linkedin" | "telegram") => {
     const text = encodeURIComponent(`${job.job_title} at ${job.company_name}`);
@@ -239,6 +245,7 @@ function JobDetailPage() {
               ...(job.eligibility ? [{ id: "eligibility", label: "Eligibility Criteria" }] : []),
               ...(job.salary ? [{ id: "salary", label: "Salary Details" }] : []),
               ...(job.selection_process ? [{ id: "selection", label: "Selection Process" }] : []),
+              ...customSections.map((s, i) => ({ id: `custom-${i}`, label: s.title })),
               { id: "faq", label: "FAQ" },
               { id: "apply", label: "Apply" },
             ]}
@@ -263,6 +270,14 @@ function JobDetailPage() {
               {job.last_date && <li><strong>Last date to apply:</strong> {format(new Date(job.last_date), "PPP")}</li>}
             </ul>
           </Section>
+
+          <div className="mt-4 flex justify-center">
+            <Button asChild size="sm">
+              <a href={job.apply_link} target="_blank" rel="noopener noreferrer">
+                Apply Now <ExternalLink className="ml-1.5 h-4 w-4" />
+              </a>
+            </Button>
+          </div>
 
           <AdSlot slot="after-overview" />
 
@@ -298,6 +313,15 @@ function JobDetailPage() {
             </Section>
           )}
           {job.selection_process && <Section id="selection" title="Selection Process" body={job.selection_process} />}
+
+          {customSections.map((s, i) => (
+            <Section key={`custom-${i}`} id={`custom-${i}`} title={s.title}>
+              <div
+                className="prose prose-sm max-w-none text-base leading-relaxed text-foreground/90 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:text-primary [&_a]:underline [&_h2]:mt-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:mt-3 [&_h3]:text-lg [&_h3]:font-semibold"
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(s.content) }}
+              />
+            </Section>
+          ))}
 
           <Section id="faq" title="Frequently Asked Questions">
             <FAQ
@@ -505,4 +529,8 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
       <dd className="text-right text-foreground">{children}</dd>
     </div>
   );
+}
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ");
 }
