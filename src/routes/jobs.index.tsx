@@ -2,12 +2,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { z } from "zod";
-import { Search, X, Briefcase } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
+import { Search, X, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { JobCard, type JobCardData } from "@/components/JobCard";
+import { JobCard } from "@/components/JobCard";
 import { collectionPageSchema, safeJsonLd } from "@/lib/seo-schema";
 import { categoriesQuery, jobsListQuery, PAGE_SIZE } from "@/lib/job-queries";
 
@@ -145,13 +144,7 @@ function JobsPage() {
         ))}
       </div>
 
-      {jobs.isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-40 animate-pulse rounded-2xl border border-border/60 bg-muted/40" />
-          ))}
-        </div>
-      ) : (jobs.data?.items.length ?? 0) === 0 ? (
+      {jobs.data.items.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center">
           <Briefcase className="mx-auto h-8 w-8 text-muted-foreground" />
           <p className="mt-3 font-medium">No matching jobs</p>
