@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   ArrowRight,
@@ -30,8 +30,28 @@ import { slugify } from "@/lib/slug";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
 import { websiteSchema, safeJsonLd } from "@/lib/seo-schema";
+import {
+  categoriesQuery,
+  featuredCompaniesQuery,
+  latestJobsQuery,
+  trendingJobsQuery,
+} from "@/lib/job-queries";
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(latestJobsQuery),
+      context.queryClient.ensureQueryData(trendingJobsQuery),
+      context.queryClient.ensureQueryData(categoriesQuery),
+      context.queryClient.ensureQueryData(featuredCompaniesQuery),
+    ]);
+  },
+  errorComponent: ({ error }) => (
+    <div className="container mx-auto px-4 py-20 text-center" role="alert">
+      <h1 className="text-2xl font-bold">Something went wrong</h1>
+      <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+    </div>
+  ),
   head: () => ({
     meta: [
       { title: "Career Alerts – Freshers Jobs & Internships India" },
@@ -71,77 +91,15 @@ const CATEGORY_ICONS: Record<string, typeof Briefcase> = {
 };
 
 function Index() {
-  const latestJobs = useQuery({
-    queryKey: ["jobs", "latest"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("jobs")
-        .select("slug,company_name,company_logo,job_title,location,experience,salary,created_at,is_featured")
-        .eq("is_published", true)
-        .order("created_at", { ascending: false })
-        .limit(8);
-      if (error) throw error;
-      return (data ?? []) as JobCardData[];
-    },
-  });
-
-  const trendingJobs = useQuery({
-    queryKey: ["jobs", "trending"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("jobs")
-        .select("slug,company_name,job_title")
-        .eq("is_published", true)
-        .eq("is_trending", true)
-        .order("created_at", { ascending: false })
-        .limit(6);
-      if (error) throw error;
-      return data ?? [];
-    },
-  });
-
-  const categories = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("*")
-        .order("sort_order");
-      if (error) throw error;
-      return data ?? [];
-    },
-  });
-
-  const companies = useQuery({
-    queryKey: ["companies", "featured"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("jobs")
-        .select("company_name,company_logo")
-        .eq("is_published", true);
-      if (error) throw error;
-      const map = new Map<string, { name: string; logo: string | null; count: number }>();
-      for (const row of data ?? []) {
-        const key = slugify(row.company_name);
-        const existing = map.get(key);
-        if (existing) {
-          existing.count += 1;
-          if (!existing.logo && row.company_logo) existing.logo = row.company_logo;
-        } else {
-          map.set(key, { name: row.company_name, logo: row.company_logo, count: 1 });
-        }
-      }
-      return Array.from(map.entries())
-        .map(([slug, v]) => ({ slug, ...v }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 12);
-    },
-  });
+  const latestJobs = useSuspenseQuery(latestJobsQuery);
+  const trendingJobs = useSuspenseQuery(trendingJobsQuery);
+  const categories = useSuspenseQuery(categoriesQuery);
+  const companies = useSuspenseQuery(featuredCompaniesQuery);
 
   return (
     <div>
       <HeroSection trending={trendingJobs.data ?? []} />
-      <LatestJobsSection jobs={latestJobs.data ?? []} loading={latestJobs.isLoading} />
+      <LatestJobsSection jobs={latestJobs.data ?? []} loading={false} />
       <CategoriesSection categories={categories.data ?? []} />
       <FeaturedCompaniesSection companies={companies.data ?? []} />
       <NewsletterSection />

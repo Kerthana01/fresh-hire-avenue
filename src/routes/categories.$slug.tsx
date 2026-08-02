@@ -1,26 +1,17 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { JobCard, type JobCardData } from "@/components/JobCard";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { JobCard } from "@/components/JobCard";
 import { Briefcase } from "lucide-react";
 import { collectionPageSchema, safeJsonLd } from "@/lib/seo-schema";
-
-const categoryQuery = (slug: string) => ({
-  queryKey: ["category", slug],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("categories")
-      .select("*")
-      .eq("slug", slug)
-      .maybeSingle();
-    if (error) throw error;
-    if (!data) throw notFound();
-    return data;
-  },
-});
+import { categoryBySlugQuery, categoryJobsQuery } from "@/lib/job-queries";
 
 export const Route = createFileRoute("/categories/$slug")({
-  loader: ({ params, context }) => context.queryClient.ensureQueryData(categoryQuery(params.slug)),
+  loader: async ({ params, context }) => {
+    const category = await context.queryClient.ensureQueryData(categoryBySlugQuery(params.slug));
+    if (!category) throw notFound();
+    await context.queryClient.ensureQueryData(categoryJobsQuery(category.id));
+    return category;
+  },
   head: ({ loaderData, params }) => ({
     meta: [
       { title: loaderData ? `${loaderData.name} — Career Alerts` : "Category — Career Alerts" },
@@ -65,20 +56,8 @@ export const Route = createFileRoute("/categories/$slug")({
 
 function CategoryPage() {
   const { slug } = Route.useParams();
-  const { data: category } = useQuery(categoryQuery(slug));
-  const jobs = useQuery({
-    queryKey: ["category-jobs", category?.id],
-    enabled: !!category,
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("jobs")
-        .select("slug,company_name,company_logo,job_title,location,experience,salary,created_at,is_featured")
-        .eq("is_published", true)
-        .eq("category_id", category!.id)
-        .order("created_at", { ascending: false });
-      return (data ?? []) as JobCardData[];
-    },
-  });
+  const { data: category } = useSuspenseQuery(categoryBySlugQuery(slug));
+  const jobs = useSuspenseQuery(categoryJobsQuery(category?.id));
 
   if (!category) return null;
 
@@ -95,20 +74,14 @@ function CategoryPage() {
       {category.description && <p className="mt-2 text-muted-foreground">{category.description}</p>}
 
       <div className="mt-8">
-        {jobs.isLoading ? (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-40 animate-pulse rounded-2xl border border-border/60 bg-muted/40" />
-            ))}
-          </div>
-        ) : (jobs.data?.length ?? 0) === 0 ? (
+        {jobs.data.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center">
             <Briefcase className="mx-auto h-8 w-8 text-muted-foreground" />
             <p className="mt-3 font-medium">No jobs in this category yet</p>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
-            {jobs.data!.map((j) => <JobCard key={j.slug} job={j} />)}
+            {jobs.data.map((j) => <JobCard key={j.slug} job={j} />)}
           </div>
         )}
       </div>

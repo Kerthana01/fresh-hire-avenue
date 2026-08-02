@@ -1,15 +1,31 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Building2, Search } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { slugify } from "@/lib/slug";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { collectionPageSchema, breadcrumbSchema, SITE_URL, SITE_NAME, safeJsonLd } from "@/lib/seo-schema";
+import { allPublishedJobsQuery } from "@/lib/job-queries";
 
 export const Route = createFileRoute("/company/$slug")({
+  loader: async ({ context, params }) => {
+    const jobs = await context.queryClient.ensureQueryData(allPublishedJobsQuery);
+    if (!jobs.some((j) => slugify(j.company_name) === params.slug)) throw notFound();
+  },
+  notFoundComponent: () => (
+    <div className="container mx-auto px-4 py-20 text-center">
+      <h1 className="text-2xl font-bold">Company not found</h1>
+      <Link to="/jobs" className="mt-4 inline-block text-primary hover:underline">Browse all jobs</Link>
+    </div>
+  ),
+  errorComponent: ({ error }) => (
+    <div className="container mx-auto px-4 py-20 text-center" role="alert">
+      <h1 className="text-2xl font-bold">Something went wrong</h1>
+      <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+    </div>
+  ),
   head: ({ params }) => {
     const name = params.slug
       .split("-")
@@ -80,20 +96,9 @@ function CompanyPage() {
   const { slug } = Route.useParams();
   const [q, setQ] = useState("");
 
-  const jobs = useQuery({
-    queryKey: ["company", slug, "jobs"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("jobs")
-        .select("slug,company_name,company_logo,job_title,location,experience,salary,created_at,is_featured")
-        .eq("is_published", true)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []) as Row[];
-    },
-  });
+  const jobs = useSuspenseQuery(allPublishedJobsQuery);
 
-  const all = jobs.data ?? [];
+  const all = (jobs.data ?? []) as Row[];
   const matches = useMemo(
     () => all.filter((j) => slugify(j.company_name) === slug),
     [all, slug],
@@ -125,14 +130,6 @@ function CompanyPage() {
     }
     return Array.from(map.values()).sort((a, b) => b.count - a.count).slice(0, 6);
   }, [all, slug]);
-
-  if (jobs.isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="h-40 animate-pulse rounded-2xl border border-border/60 bg-muted/40" />
-      </div>
-    );
-  }
 
   if (!company) {
     throw notFound();
