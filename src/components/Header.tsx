@@ -61,8 +61,9 @@ export function Header() {
         <nav className="ml-2 hidden items-center gap-1 lg:flex">
           {NAV.map((n) => (
             <Link
-              key={n.to}
+              key={n.label}
               to={n.to}
+              params={n.params as never}
               className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               activeProps={{ className: "bg-muted text-foreground font-medium" }}
               activeOptions={{ exact: n.to === "/" }}
@@ -129,8 +130,9 @@ export function Header() {
               <div className="mt-8 flex flex-col gap-1">
                 {NAV.map((n) => (
                   <Link
-                    key={n.to}
+                    key={n.label}
                     to={n.to}
+                    params={n.params as never}
                     onClick={() => setMenuOpen(false)}
                     className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
                   >

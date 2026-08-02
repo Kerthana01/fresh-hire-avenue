@@ -63,10 +63,10 @@ export function Footer() {
           <h3 className="mb-3 text-sm font-semibold">Explore</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><Link to="/jobs" className="hover:text-foreground">All Jobs</Link></li>
-            <li><Link to="/categories/freshers" className="hover:text-foreground">Freshers</Link></li>
-            <li><Link to="/categories/internship" className="hover:text-foreground">Internships</Link></li>
-            <li><Link to="/categories/off-campus" className="hover:text-foreground">Off-Campus</Link></li>
-            <li><Link to="/categories/work-from-home" className="hover:text-foreground">Work From Home</Link></li>
+            <li><Link to="/categories/$slug" params={{ slug: "freshers" }} className="hover:text-foreground">Freshers</Link></li>
+            <li><Link to="/categories/$slug" params={{ slug: "internship" }} className="hover:text-foreground">Internships</Link></li>
+            <li><Link to="/categories/$slug" params={{ slug: "off-campus" }} className="hover:text-foreground">Off-Campus</Link></li>
+            <li><Link to="/categories/$slug" params={{ slug: "work-from-home" }} className="hover:text-foreground">Work From Home</Link></li>
           </ul>
         </div>
 
