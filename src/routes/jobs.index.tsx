@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Search, X, Briefcase } from "lucide-react";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { collectionPageSchema, safeJsonLd } from "@/lib/seo-schema";
+import { categoriesQuery, jobsListQuery, PAGE_SIZE } from "@/lib/job-queries";
 
 const searchSchema = z.object({
   q: z.string().optional().catch(undefined),
@@ -18,6 +19,24 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/jobs/")({
   validateSearch: searchSchema,
+  loaderDeps: ({ search }) => ({ q: search.q, category: search.category, page: search.page ?? 1 }),
+  loader: async ({ context, deps }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(categoriesQuery),
+      context.queryClient.ensureQueryData(jobsListQuery(deps)),
+    ]);
+  },
+  errorComponent: ({ error }) => (
+    <div className="container mx-auto px-4 py-20 text-center" role="alert">
+      <h1 className="text-2xl font-bold">Something went wrong</h1>
+      <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="container mx-auto px-4 py-20 text-center">
+      <h1 className="text-2xl font-bold">No jobs found</h1>
+    </div>
+  ),
   head: () => ({
     meta: [
       { title: "Browse all jobs — Career Alerts" },
@@ -48,8 +67,6 @@ export const Route = createFileRoute("/jobs/")({
   component: JobsPage,
 });
 
-const PAGE_SIZE = 12;
-
 function JobsPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -57,38 +74,8 @@ function JobsPage() {
 
   const page = search.page ?? 1;
 
-  const categories = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data } = await supabase.from("categories").select("*").order("sort_order");
-      return data ?? [];
-    },
-  });
-
-  const jobs = useQuery({
-    queryKey: ["jobs", "list", search.q ?? "", search.category ?? "", page],
-    queryFn: async () => {
-      let q = supabase
-        .from("jobs")
-        .select("slug,company_name,company_logo,job_title,location,experience,salary,created_at,is_featured,category_id", { count: "exact" })
-        .eq("is_published", true)
-        .order("created_at", { ascending: false })
-        .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
-
-      if (search.q) {
-        const like = `%${search.q}%`;
-        q = q.or(`job_title.ilike.${like},company_name.ilike.${like},location.ilike.${like}`);
-      }
-      if (search.category && categories.data) {
-        const cat = categories.data.find((c) => c.slug === search.category);
-        if (cat) q = q.eq("category_id", cat.id);
-      }
-      const { data, count, error } = await q;
-      if (error) throw error;
-      return { items: (data ?? []) as JobCardData[], count: count ?? 0 };
-    },
-    enabled: !search.category || !!categories.data,
-  });
+  const categories = useQuery(categoriesQuery);
+  const jobs = useSuspenseQuery(jobsListQuery({ q: search.q, category: search.category, page }));
 
   const totalPages = useMemo(
     () => Math.max(1, Math.ceil((jobs.data?.count ?? 0) / PAGE_SIZE)),
