@@ -13,12 +13,12 @@ import {
 } from "@/components/ui/sheet";
 
 const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/jobs", label: "Jobs" },
-  { to: "/categories/freshers", label: "Freshers" },
-  { to: "/categories/internship", label: "Internships" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
+  { to: "/", params: undefined, label: "Home" },
+  { to: "/jobs", params: undefined, label: "Jobs" },
+  { to: "/categories/$slug", params: { slug: "freshers" }, label: "Freshers" },
+  { to: "/categories/$slug", params: { slug: "internship" }, label: "Internships" },
+  { to: "/about", params: undefined, label: "About" },
+  { to: "/contact", params: undefined, label: "Contact" },
 ] as const;
 
 export function Header() {
@@ -61,8 +61,9 @@ export function Header() {
         <nav className="ml-2 hidden items-center gap-1 lg:flex">
           {NAV.map((n) => (
             <Link
-              key={n.to}
+              key={n.label}
               to={n.to}
+              params={n.params as never}
               className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               activeProps={{ className: "bg-muted text-foreground font-medium" }}
               activeOptions={{ exact: n.to === "/" }}
@@ -129,8 +130,9 @@ export function Header() {
               <div className="mt-8 flex flex-col gap-1">
                 {NAV.map((n) => (
                   <Link
-                    key={n.to}
+                    key={n.label}
                     to={n.to}
+                    params={n.params as never}
                     onClick={() => setMenuOpen(false)}
                     className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
                   >
