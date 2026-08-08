@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
   ArrowLeft,
@@ -20,7 +20,7 @@ import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
 import { jobPostingSchema, breadcrumbSchema, faqPageSchema, SITE_URL, safeJsonLd } from "@/lib/seo-schema";
 import { normalizeSections } from "@/components/SectionsBuilder";
-import DOMPurify from "dompurify";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 
 const jobQuery = (slug: string) => ({
   queryKey: ["job", slug],
@@ -133,7 +133,7 @@ export const Route = createFileRoute("/jobs/$slug")({
 
 function JobDetailPage() {
   const { slug } = Route.useParams();
-  const { data: job } = useQuery(jobQuery(slug));
+  const { data: job } = useSuspenseQuery(jobQuery(slug));
 
   const related = useQuery({
     queryKey: ["related", job?.category_id, job?.id],
@@ -265,7 +265,7 @@ function JobDetailPage() {
               <li><strong>Role:</strong> {job.job_title}</li>
               {job.qualification && <li><strong>Qualification:</strong> {job.qualification}</li>}
               {job.experience && <li><strong>Experience:</strong> {job.experience}</li>}
-              {job.salary && <li><strong>Salary:</strong> {job.salary}</li>}
+              <li><strong>Salary:</strong> {job.salary || "Not disclosed"}</li>
               {job.location && <li><strong>Location:</strong> {job.location}</li>}
               {job.last_date && <li><strong>Last date to apply:</strong> {format(new Date(job.last_date), "PPP")}</li>}
             </ul>
@@ -318,7 +318,7 @@ function JobDetailPage() {
             <Section key={`custom-${i}`} id={`custom-${i}`} title={s.title}>
               <div
                 className="prose prose-sm max-w-none text-base leading-relaxed text-foreground/90 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:text-primary [&_a]:underline [&_h2]:mt-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:mt-3 [&_h3]:text-lg [&_h3]:font-semibold"
-                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(s.content) }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(s.content) }}
               />
             </Section>
           ))}
