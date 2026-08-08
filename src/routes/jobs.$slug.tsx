@@ -221,7 +221,7 @@ function JobDetailPage() {
         <article>
           <header className="rounded-2xl border border-border/70 bg-card p-6 shadow-[var(--shadow-soft)]">
             <div className="flex items-start gap-4">
-              <CompanyLogo name={job.company_name} logo={job.company_logo} size="lg" />
+              <CompanyLogo name={job.company_name} logo={job.company_logo} size="lg" priority />
               <div className="min-w-0 flex-1">
                 <p className="text-sm text-muted-foreground">{job.company_name}</p>
                 <h1 className="text-2xl font-bold tracking-tight sm:text-4xl">{displayTitle}</h1>
