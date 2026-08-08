@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { categoryCountsQuery } from "@/lib/job-queries";
 import { Briefcase, Instagram, Linkedin, MessageCircle, Twitter, Youtube } from "lucide-react";
 
 const SOCIAL_LINKS = [
@@ -30,6 +32,11 @@ const SOCIAL_LINKS = [
 ] as const;
 
 export function Footer() {
+  // Only link categories that actually have open jobs; empty ones are
+  // hidden from navigation until they get their first listing.
+  const { data: categories } = useQuery(categoryCountsQuery);
+  const activeCategories = (categories ?? []).filter((c) => c.jobCount > 0).slice(0, 5);
+
   return (
     <footer className="mt-20 border-t border-border/60 bg-muted/40">
       <div className="container mx-auto grid gap-10 px-4 py-12 md:grid-cols-4">
@@ -63,10 +70,13 @@ export function Footer() {
           <h3 className="mb-3 text-sm font-semibold">Explore</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><Link to="/jobs" className="hover:text-foreground">All Jobs</Link></li>
-            <li><Link to="/categories/$slug" params={{ slug: "freshers" }} className="hover:text-foreground">Freshers</Link></li>
-            <li><Link to="/categories/$slug" params={{ slug: "internship" }} className="hover:text-foreground">Internships</Link></li>
-            <li><Link to="/categories/$slug" params={{ slug: "off-campus" }} className="hover:text-foreground">Off-Campus</Link></li>
-            <li><Link to="/categories/$slug" params={{ slug: "work-from-home" }} className="hover:text-foreground">Work From Home</Link></li>
+            {activeCategories.map((c) => (
+              <li key={c.slug}>
+                <Link to="/categories/$slug" params={{ slug: c.slug }} className="hover:text-foreground">
+                  {c.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
