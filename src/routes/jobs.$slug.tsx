@@ -60,9 +60,7 @@ export const Route = createFileRoute("/jobs/$slug")({
     const ogTitle = job
       ? `${headline}${location && !headline.includes(location) ? ` – ${location}` : ""} | Career Alerts`
       : title;
-    const ogImage = job?.company_logo && /^https?:\/\//i.test(job.company_logo)
-      ? job.company_logo
-      : "https://careeralerts.co.in/og-image.jpg";
+    const ogImage = absoluteLogoUrl(job?.company_logo);
     const faqItems = job
       ? [
           {

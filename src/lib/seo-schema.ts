@@ -4,6 +4,20 @@
 export const SITE_URL = "https://careeralerts.co.in";
 export const SITE_NAME = "Career Alerts";
 export const SITE_LOGO = `${SITE_URL}/og-image.jpg`;
+
+/**
+ * Turn a stored company logo value into an absolute, self-hosted URL.
+ * Only images served from our own domain are accepted — third-party
+ * hotlinked URLs (search-engine thumbnails, random CDNs) fall back to
+ * the site's own social image.
+ */
+export function absoluteLogoUrl(logo?: string | null): string {
+  if (!logo) return SITE_LOGO;
+  const v = logo.trim();
+  if (v.startsWith("/")) return `${SITE_URL}${v}`;
+  if (v.startsWith(SITE_URL)) return v;
+  return SITE_LOGO;
+}
 export const CONTACT_EMAIL = "hello@careeralerts.co.in";
 
 export const SOCIAL_PROFILES = [
@@ -287,8 +301,7 @@ export function jobPostingSchema(job: {
   const remote = isRemoteLocation(job.location);
   const employmentType = detectEmploymentType(job.job_title, job.experience);
   const salary = parseSalary(job.salary);
-  const absoluteLogo =
-    job.company_logo && /^https?:\/\//i.test(job.company_logo) ? job.company_logo : SITE_LOGO;
+  const absoluteLogo = absoluteLogoUrl(job.company_logo);
   const directApply = /^https?:\/\//i.test(job.apply_link);
 
   const schema: Record<string, unknown> = {
