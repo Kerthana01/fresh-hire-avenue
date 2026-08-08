@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { slugify, uniqueSlug } from "@/lib/slug";
 import { SectionsBuilder, type CustomSection } from "@/components/SectionsBuilder";
+import { toast } from "sonner";
 
 export interface JobFormValues {
   id?: string;
