@@ -72,9 +72,21 @@ export function JobForm({ initial, onSubmit, submitting }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const job_title = v.job_title.replace(/\s+/g, " ").trim();
+    const company_name = v.company_name.replace(/\s+/g, " ").trim();
+    if (!job_title) {
+      toast.error("Job title is required — a job cannot be published without it.");
+      return;
+    }
+    if (job_title.toLowerCase() === company_name.toLowerCase()) {
+      toast.error("Job title must be different from the company name.");
+      return;
+    }
     const finalValues = {
       ...v,
-      slug: v.slug || uniqueSlug(`${v.company_name}-${v.job_title}`),
+      job_title,
+      company_name,
+      slug: v.slug || uniqueSlug(`${company_name}-${job_title}`),
     };
     await onSubmit(finalValues);
   };
