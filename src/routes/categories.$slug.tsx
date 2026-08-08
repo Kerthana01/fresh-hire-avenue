@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { JobCard } from "@/components/JobCard";
 import { Briefcase } from "lucide-react";
-import { collectionPageSchema, safeJsonLd } from "@/lib/seo-schema";
+import { categoryLabel, cleanTitle, collectionPageSchema, safeJsonLd } from "@/lib/seo-schema";
 import { categoryBySlugQuery, categoryJobsQuery } from "@/lib/job-queries";
 
 export const Route = createFileRoute("/categories/$slug")({
@@ -12,16 +12,22 @@ export const Route = createFileRoute("/categories/$slug")({
     await context.queryClient.ensureQueryData(categoryJobsQuery(category.id));
     return category;
   },
-  head: ({ loaderData, params }) => ({
+  head: ({ loaderData, params }) => {
+    const label = loaderData ? categoryLabel(loaderData.name) : "Category";
+    const pageTitle = `${label} — Career Alerts`;
+    const desc =
+      cleanTitle(loaderData?.description) ||
+      `Latest ${label.toLowerCase()}, internships and off-campus drives from top companies, updated daily on Career Alerts.`;
+    return {
     meta: [
-      { title: loaderData ? `${loaderData.name} — Career Alerts` : "Category — Career Alerts" },
-      { name: "description", content: loaderData?.description ?? `Latest ${loaderData?.name ?? ""} jobs, internships and off-campus drives from top companies, updated daily on Career Alerts.` },
-      { property: "og:title", content: loaderData ? `${loaderData.name} Jobs — Career Alerts` : "Category — Career Alerts" },
-      { property: "og:description", content: loaderData?.description ?? `Latest ${loaderData?.name ?? "category"} jobs and openings curated on Career Alerts.` },
+      { title: pageTitle },
+      { name: "description", content: desc },
+      { property: "og:title", content: pageTitle },
+      { property: "og:description", content: desc },
       { property: "og:url", content: `https://careeralerts.co.in/categories/${params.slug}` },
       { property: "og:image", content: "https://careeralerts.co.in/og-image.jpg" },
-      { name: "twitter:title", content: loaderData ? `${loaderData.name} Jobs — Career Alerts` : "Category — Career Alerts" },
-      { name: "twitter:description", content: loaderData?.description ?? `Latest ${loaderData?.name ?? "category"} jobs and openings on Career Alerts.` },
+      { name: "twitter:title", content: pageTitle },
+      { name: "twitter:description", content: desc },
       { name: "twitter:image", content: "https://careeralerts.co.in/og-image.jpg" },
     ],
     links: [{ rel: "canonical", href: `https://careeralerts.co.in/categories/${params.slug}` }],
@@ -30,16 +36,15 @@ export const Route = createFileRoute("/categories/$slug")({
         type: "application/ld+json",
         children: safeJsonLd(
           collectionPageSchema({
-            name: loaderData ? `${loaderData.name} Jobs — Career Alerts` : "Category — Career Alerts",
-            description:
-              loaderData?.description ??
-              `Latest ${loaderData?.name ?? "category"} jobs and openings on Career Alerts.`,
+            name: pageTitle,
+            description: desc,
             url: `https://careeralerts.co.in/categories/${params.slug}`,
           }),
         ),
       },
     ],
-  }),
+    };
+  },
   notFoundComponent: () => (
     <div className="container mx-auto px-4 py-20 text-center">
       <h1 className="text-2xl font-bold">Category not found</h1>
@@ -70,7 +75,7 @@ function CategoryPage() {
         <span>/</span>
         <span className="text-foreground">{category.name}</span>
       </nav>
-      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{category.name}</h1>
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{categoryLabel(category.name)}</h1>
       {category.description && <p className="mt-2 text-muted-foreground">{category.description}</p>}
 
       <div className="mt-8">
