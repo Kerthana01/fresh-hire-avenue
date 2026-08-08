@@ -265,7 +265,7 @@ function JobDetailPage() {
               <li><strong>Role:</strong> {job.job_title}</li>
               {job.qualification && <li><strong>Qualification:</strong> {job.qualification}</li>}
               {job.experience && <li><strong>Experience:</strong> {job.experience}</li>}
-              {job.salary && <li><strong>Salary:</strong> {job.salary}</li>}
+              <li><strong>Salary:</strong> {job.salary || "Not disclosed"}</li>
               {job.location && <li><strong>Location:</strong> {job.location}</li>}
               {job.last_date && <li><strong>Last date to apply:</strong> {format(new Date(job.last_date), "PPP")}</li>}
             </ul>
