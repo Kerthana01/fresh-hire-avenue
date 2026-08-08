@@ -14,6 +14,44 @@ export const SOCIAL_PROFILES = [
   "https://whatsapp.com/channel/0029VbCFVJ7BA1euBgf2UV34",
 ];
 
+// --- Title helpers -------------------------------------------------------
+// Strip tabs, newlines, zero-width and other control characters, collapse
+// runs of whitespace and trim. Used everywhere a title is rendered.
+export function cleanTitle(value?: string | null): string {
+  return (value ?? "")
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\u0000-\u001F\u007F\u200B-\u200D\uFEFF]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Headline for a job: "Title at Company". Falls back to a company/location
+ * pattern when the job title is missing so we never render "X at X".
+ */
+export function jobHeadline(job: {
+  job_title?: string | null;
+  company_name?: string | null;
+  location?: string | null;
+}): string {
+  const title = cleanTitle(job.job_title);
+  const company = cleanTitle(job.company_name);
+  const location = cleanTitle(job.location);
+  if (title && company && title.toLowerCase() !== company.toLowerCase()) {
+    return `${title} at ${company}`;
+  }
+  if (title) return title;
+  if (company) return location ? `Hiring at ${company} – ${location}` : `Hiring at ${company}`;
+  return "Job Opening";
+}
+
+/** Category label that never duplicates the word "Jobs". */
+export function categoryLabel(name?: string | null): string {
+  const clean = cleanTitle(name);
+  if (!clean) return "Jobs";
+  return /\bjobs?\b/i.test(clean) ? clean : `${clean} Jobs`;
+}
+
 // Escape HTML/script-breaking sequences in a value destined for a
 // <script type="application/ld+json"> tag. JSON.stringify does not escape
 // `<`, `>`, or `/`, so a value containing `</script>` would terminate the
@@ -256,7 +294,7 @@ export function jobPostingSchema(job: {
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "JobPosting",
-    title: job.job_title,
+    title: cleanTitle(job.job_title) || jobHeadline(job),
     description: `<p>${escapeHtml(job.job_description).replace(/\n+/g, "</p><p>")}</p>`,
     datePosted: new Date(job.created_at).toISOString(),
     employmentType,

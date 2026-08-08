@@ -18,7 +18,15 @@ import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
-import { jobPostingSchema, breadcrumbSchema, faqPageSchema, SITE_URL, safeJsonLd } from "@/lib/seo-schema";
+import {
+  jobPostingSchema,
+  breadcrumbSchema,
+  faqPageSchema,
+  SITE_URL,
+  safeJsonLd,
+  cleanTitle,
+  jobHeadline,
+} from "@/lib/seo-schema";
 import { normalizeSections } from "@/components/SectionsBuilder";
 import { sanitizeHtml } from "@/lib/sanitize-html";
 
@@ -43,12 +51,14 @@ export const Route = createFileRoute("/jobs/$slug")({
   },
   head: ({ loaderData, params }) => {
     const job = loaderData;
-    const title = job ? `${job.job_title} at ${job.company_name} — Career Alerts` : "Job — Career Alerts";
+    const headline = job ? jobHeadline(job) : "";
+    const title = job ? `${headline} — Career Alerts` : "Job — Career Alerts";
     const desc = job
       ? (job.meta_description ?? job.job_description.replace(/\s+/g, " ").slice(0, 160))
       : "";
+    const location = cleanTitle(job?.location);
     const ogTitle = job
-      ? `${job.job_title} at ${job.company_name}${job.location ? ` – ${job.location}` : ""} | Career Alerts`
+      ? `${headline}${location && !headline.includes(location) ? ` – ${location}` : ""} | Career Alerts`
       : title;
     const ogImage = job?.company_logo && /^https?:\/\//i.test(job.company_logo)
       ? job.company_logo
@@ -79,7 +89,7 @@ export const Route = createFileRoute("/jobs/$slug")({
       : [];
     return {
       meta: [
-        { title: job?.meta_title ?? title },
+        { title: cleanTitle(job?.meta_title) || title },
         { name: "description", content: desc },
         { property: "og:title", content: ogTitle },
         { property: "og:description", content: desc },
@@ -103,7 +113,7 @@ export const Route = createFileRoute("/jobs/$slug")({
                 breadcrumbSchema([
                   { name: "Home", url: `${SITE_URL}/` },
                   { name: "Jobs", url: `${SITE_URL}/jobs` },
-                  { name: job.job_title, url: `${SITE_URL}/jobs/${params.slug}` },
+                  { name: cleanTitle(job.job_title) || headline, url: `${SITE_URL}/jobs/${params.slug}` },
                 ]),
               ),
             },
@@ -176,6 +186,8 @@ function JobDetailPage() {
 
   if (!job) return null;
 
+  const displayTitle = cleanTitle(job.job_title) || jobHeadline(job);
+
   const customSections = normalizeSections(job.custom_sections).filter(
     (s) => s.title.trim() && stripHtml(s.content).trim(),
   );
@@ -199,7 +211,7 @@ function JobDetailPage() {
         <span>/</span>
         <Link to="/jobs" className="hover:text-foreground">Jobs</Link>
         <span>/</span>
-        <span className="truncate text-foreground">{job.job_title}</span>
+        <span className="truncate text-foreground">{displayTitle}</span>
       </nav>
 
       <Button variant="ghost" size="sm" asChild className="mb-4">
@@ -213,7 +225,7 @@ function JobDetailPage() {
               <CompanyLogo name={job.company_name} logo={job.company_logo} size="lg" />
               <div className="min-w-0 flex-1">
                 <p className="text-sm text-muted-foreground">{job.company_name}</p>
-                <h1 className="text-2xl font-bold tracking-tight sm:text-4xl">{job.job_title}</h1>
+                <h1 className="text-2xl font-bold tracking-tight sm:text-4xl">{displayTitle}</h1>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {job.location && <Badge variant="secondary"><MapPin className="mr-1 h-3 w-3" />{job.location}</Badge>}
                   {job.salary && <Badge variant="secondary"><IndianRupee className="mr-1 h-3 w-3" />{job.salary}</Badge>}
