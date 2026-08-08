@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ScamWarning } from "@/components/ScamWarning";
 
 export const Route = createFileRoute("/disclaimer")({
   head: () => ({
@@ -21,7 +22,12 @@ export const Route = createFileRoute("/disclaimer")({
       <div className="prose prose-lg mt-6 max-w-none text-foreground/90">
         <p>Career Alerts aggregates publicly available job openings. We are not a recruitment agency and never charge candidates a fee.</p>
         <p>Always verify job details on the official company website before applying.</p>
+        <p>
+          See our <Link to="/editorial-policy">editorial and corrections policy</Link> for how
+          listings are sourced, verified, and corrected.
+        </p>
       </div>
+      <ScamWarning className="mt-8" />
     </div>
   ),
 });
