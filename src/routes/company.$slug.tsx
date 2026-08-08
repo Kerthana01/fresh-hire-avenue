@@ -149,7 +149,7 @@ function CompanyPage() {
             <span className="text-foreground">{name}</span>
           </nav>
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <CompanyLogo name={name} logo={company.company_logo} size="lg" />
+            <CompanyLogo name={name} logo={company.company_logo} size="lg" priority />
             <div className="min-w-0">
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{name} Careers &amp; Jobs</h1>
               <p className="mt-1 text-sm text-muted-foreground">
