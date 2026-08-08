@@ -113,7 +113,7 @@ export const Route = createFileRoute("/jobs/$slug")({
                 breadcrumbSchema([
                   { name: "Home", url: `${SITE_URL}/` },
                   { name: "Jobs", url: `${SITE_URL}/jobs` },
-                  { name: job.job_title, url: `${SITE_URL}/jobs/${params.slug}` },
+                  { name: cleanTitle(job.job_title) || headline, url: `${SITE_URL}/jobs/${params.slug}` },
                 ]),
               ),
             },
