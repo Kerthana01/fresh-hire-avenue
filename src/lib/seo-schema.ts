@@ -294,7 +294,7 @@ export function jobPostingSchema(job: {
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "JobPosting",
-    title: job.job_title,
+    title: cleanTitle(job.job_title) || jobHeadline(job),
     description: `<p>${escapeHtml(job.job_description).replace(/\n+/g, "</p><p>")}</p>`,
     datePosted: new Date(job.created_at).toISOString(),
     employmentType,
