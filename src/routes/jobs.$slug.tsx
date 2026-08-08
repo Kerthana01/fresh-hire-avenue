@@ -26,6 +26,7 @@ import {
   safeJsonLd,
   cleanTitle,
   jobHeadline,
+  absoluteLogoUrl,
 } from "@/lib/seo-schema";
 import { normalizeSections } from "@/components/SectionsBuilder";
 import { sanitizeHtml } from "@/lib/sanitize-html";
