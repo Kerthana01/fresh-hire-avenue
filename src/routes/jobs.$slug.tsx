@@ -18,7 +18,15 @@ import { Badge } from "@/components/ui/badge";
 import { JobCard, type JobCardData } from "@/components/JobCard";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
-import { jobPostingSchema, breadcrumbSchema, faqPageSchema, SITE_URL, safeJsonLd } from "@/lib/seo-schema";
+import {
+  jobPostingSchema,
+  breadcrumbSchema,
+  faqPageSchema,
+  SITE_URL,
+  safeJsonLd,
+  cleanTitle,
+  jobHeadline,
+} from "@/lib/seo-schema";
 import { normalizeSections } from "@/components/SectionsBuilder";
 import { sanitizeHtml } from "@/lib/sanitize-html";
 
@@ -43,12 +51,14 @@ export const Route = createFileRoute("/jobs/$slug")({
   },
   head: ({ loaderData, params }) => {
     const job = loaderData;
-    const title = job ? `${job.job_title} at ${job.company_name} — Career Alerts` : "Job — Career Alerts";
+    const headline = job ? jobHeadline(job) : "";
+    const title = job ? `${headline} — Career Alerts` : "Job — Career Alerts";
     const desc = job
       ? (job.meta_description ?? job.job_description.replace(/\s+/g, " ").slice(0, 160))
       : "";
+    const location = cleanTitle(job?.location);
     const ogTitle = job
-      ? `${job.job_title} at ${job.company_name}${job.location ? ` – ${job.location}` : ""} | Career Alerts`
+      ? `${headline}${location && !headline.includes(location) ? ` – ${location}` : ""} | Career Alerts`
       : title;
     const ogImage = job?.company_logo && /^https?:\/\//i.test(job.company_logo)
       ? job.company_logo
@@ -79,7 +89,7 @@ export const Route = createFileRoute("/jobs/$slug")({
       : [];
     return {
       meta: [
-        { title: job?.meta_title ?? title },
+        { title: cleanTitle(job?.meta_title) || title },
         { name: "description", content: desc },
         { property: "og:title", content: ogTitle },
         { property: "og:description", content: desc },
