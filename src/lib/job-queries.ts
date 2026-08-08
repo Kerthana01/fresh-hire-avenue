@@ -151,3 +151,24 @@ export const allPublishedJobsQuery = queryOptions({
     return (data ?? []) as JobCardData[];
   },
 });
+/**
+ * Published job count per category slug. Drives the "empty category" rule:
+ * a category with zero active jobs is noindexed and hidden from nav until
+ * it gets its first job — no hardcoded slugs, it self-corrects.
+ */
+export const categoryCountsQuery = queryOptions({
+  queryKey: ["categories", "counts"],
+  queryFn: async () => {
+    const [cats, jobs] = await Promise.all([
+      supabase.from("categories").select("id,slug,name,description,sort_order").order("sort_order"),
+      supabase.from("jobs").select("category_id").eq("is_published", true),
+    ]);
+    if (cats.error) throw cats.error;
+    if (jobs.error) throw jobs.error;
+    const counts = new Map<string, number>();
+    for (const j of jobs.data ?? []) {
+      if (j.category_id) counts.set(j.category_id, (counts.get(j.category_id) ?? 0) + 1);
+    }
+    return (cats.data ?? []).map((c) => ({ ...c, jobCount: counts.get(c.id) ?? 0 }));
+  },
+});

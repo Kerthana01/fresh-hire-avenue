@@ -31,7 +31,7 @@ import { CompanyLogo } from "@/components/CompanyLogo";
 import { toast } from "sonner";
 import { websiteSchema, safeJsonLd } from "@/lib/seo-schema";
 import {
-  categoriesQuery,
+  categoryCountsQuery,
   featuredCompaniesQuery,
   latestJobsQuery,
   trendingJobsQuery,
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/")({
     await Promise.all([
       context.queryClient.ensureQueryData(latestJobsQuery),
       context.queryClient.ensureQueryData(trendingJobsQuery),
-      context.queryClient.ensureQueryData(categoriesQuery),
+      context.queryClient.ensureQueryData(categoryCountsQuery),
       context.queryClient.ensureQueryData(featuredCompaniesQuery),
     ]);
   },
@@ -93,7 +93,7 @@ const CATEGORY_ICONS: Record<string, typeof Briefcase> = {
 function Index() {
   const latestJobs = useSuspenseQuery(latestJobsQuery);
   const trendingJobs = useSuspenseQuery(trendingJobsQuery);
-  const categories = useSuspenseQuery(categoriesQuery);
+  const categories = useSuspenseQuery(categoryCountsQuery);
   const companies = useSuspenseQuery(featuredCompaniesQuery);
 
   return (
@@ -228,7 +228,7 @@ function LatestJobsSection({ jobs, loading }: { jobs: JobCardData[]; loading: bo
   );
 }
 
-function CategoriesSection({ categories }: { categories: Array<{ slug: string; name: string; description: string | null }> }) {
+function CategoriesSection({ categories }: { categories: Array<{ slug: string; name: string; description: string | null; jobCount: number }> }) {
   return (
     <section className="border-y border-border/60 bg-muted/30 py-16">
       <div className="container mx-auto px-4">
@@ -251,7 +251,11 @@ function CategoriesSection({ categories }: { categories: Array<{ slug: string; n
                 </span>
                 <div className="min-w-0">
                   <p className="truncate font-medium text-foreground group-hover:text-primary">{c.name}</p>
-                  <p className="truncate text-xs text-muted-foreground">{c.description}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {c.jobCount === 0
+                      ? "No openings right now — check back soon"
+                      : `${c.jobCount} open ${c.jobCount === 1 ? "job" : "jobs"}`}
+                  </p>
                 </div>
               </Link>
             );

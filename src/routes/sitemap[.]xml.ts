@@ -10,12 +10,16 @@ export const Route = createFileRoute("/sitemap.xml")({
       GET: async () => {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const [jobs, cats] = await Promise.all([
-          supabaseAdmin.from("jobs").select("slug,updated_at,company_name").eq("is_published", true),
-          supabaseAdmin.from("categories").select("slug"),
+          supabaseAdmin.from("jobs").select("slug,updated_at,company_name,category_id").eq("is_published", true),
+          supabaseAdmin.from("categories").select("id,slug"),
         ]);
 
         const companySlugs = Array.from(
           new Set((jobs.data ?? []).map((j) => slugify(j.company_name))),
+        );
+
+        const activeCategoryIds = new Set(
+          (jobs.data ?? []).map((j) => j.category_id).filter(Boolean) as string[],
         );
 
         const staticPaths = [
@@ -35,7 +39,8 @@ export const Route = createFileRoute("/sitemap.xml")({
             changefreq: s.changefreq,
             priority: s.priority,
           })),
-          ...((cats.data ?? []).map((c) => ({
+          // Categories with no published jobs are noindexed, so keep them out of the sitemap.
+          ...((cats.data ?? []).filter((c) => activeCategoryIds.has(c.id)).map((c) => ({
             loc: `${BASE_URL}/categories/${c.slug}`,
             changefreq: "weekly",
             priority: "0.7",
