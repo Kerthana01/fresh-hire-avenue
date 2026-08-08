@@ -9,8 +9,8 @@ export const Route = createFileRoute("/categories/$slug")({
   loader: async ({ params, context }) => {
     const category = await context.queryClient.ensureQueryData(categoryBySlugQuery(params.slug));
     if (!category) throw notFound();
-    await context.queryClient.ensureQueryData(categoryJobsQuery(category.id));
-    return category;
+    const jobs = await context.queryClient.ensureQueryData(categoryJobsQuery(category.id));
+    return { ...category, jobCount: jobs.length };
   },
   head: ({ loaderData, params }) => {
     const label = loaderData ? categoryLabel(loaderData.name) : "Category";
@@ -29,6 +29,10 @@ export const Route = createFileRoute("/categories/$slug")({
       { name: "twitter:title", content: pageTitle },
       { name: "twitter:description", content: desc },
       { name: "twitter:image", content: "https://careeralerts.co.in/og-image.jpg" },
+      // Empty categories are not indexable; this lifts automatically once a job is assigned.
+      ...(loaderData && loaderData.jobCount === 0
+        ? [{ name: "robots", content: "noindex, follow" }]
+        : []),
     ],
     links: [{ rel: "canonical", href: `https://careeralerts.co.in/categories/${params.slug}` }],
     scripts: [
@@ -82,7 +86,14 @@ function CategoryPage() {
         {jobs.data.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center">
             <Briefcase className="mx-auto h-8 w-8 text-muted-foreground" />
-            <p className="mt-3 font-medium">No jobs in this category yet</p>
+            <p className="mt-3 font-medium">No openings right now — check back soon</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              We only list verified, currently open roles, so this page stays empty until a real
+              opening is available.
+            </p>
+            <Link to="/jobs" className="mt-4 inline-block text-sm text-primary hover:underline">
+              Browse all open jobs
+            </Link>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
