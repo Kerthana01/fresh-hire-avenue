@@ -319,7 +319,6 @@ export function jobPostingSchema(job: {
     hiringOrganization: {
       "@type": "Organization",
       name: job.company_name,
-      sameAs: `${SITE_URL}/company/${(job.company_name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`,
       logo: absoluteLogo,
     },
     url: `${SITE_URL}/jobs/${job.slug}`,
