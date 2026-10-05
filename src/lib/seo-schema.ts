@@ -255,10 +255,66 @@ function parseAddress(location: string): { addressLocality?: string; addressRegi
   const parts = location
     .split(/[,/|]+/)
     .map((p) => p.trim())
-    .filter((p) => p && !/^india$/i.test(p) && !/^remote|wfh|work\s*from\s*home|anywhere$/i.test(p));
+    .filter(
+      (p) =>
+        p &&
+        !/^india$/i.test(p) &&
+        !/^remote|wfh|work\s*from\s*home|anywhere$/i.test(p),
+    );
+
   if (parts.length === 0) return {};
-  if (parts.length === 1) return { addressLocality: parts[0] };
-  return { addressLocality: parts[0], addressRegion: parts[1] };
+
+  const indianStatesAndUTs = new Set([
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+    "Andaman and Nicobar Islands",
+    "Chandigarh",
+    "Dadra and Nagar Haveli and Daman and Diu",
+    "Delhi",
+    "Jammu and Kashmir",
+    "Ladakh",
+    "Lakshadweep",
+    "Puducherry",
+  ]);
+
+  const locality = parts[0];
+
+  const region = parts.slice(1).find((part) =>
+    Array.from(indianStatesAndUTs).some(
+      (state) => state.toLowerCase() === part.toLowerCase(),
+    ),
+  );
+
+  return {
+    addressLocality: locality,
+    ...(region ? { addressRegion: region } : {}),
+  };
 }
 
 // Strip undefined / null / empty-string / empty-object values so the emitted
