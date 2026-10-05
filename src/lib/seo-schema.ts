@@ -206,13 +206,13 @@ export function parseSalary(
   if (!raw) return null;
   const s = raw.replace(/,/g, "");
   // Skip values that are clearly not officially published / are estimates.
-  if (
-    /not\s*disclosed|undisclosed|not\s*specified|negotiable|best\s*in\s*industry|as\s*per\s*(company|industry|norms)|depend(s|ing)|competitive|market\s*standard|estimat/i.test(
-      s,
-    )
-  ) {
-    return null;
-  }
+if (
+  /not\s*disclosed|undisclosed|not\s*specified|negotiable|best\s*in\s*industry|as\s*per\s*(company|industry|norms)|depend(s|ing)|competitive|market\s*standard|approximat|estimate|expected/i.test(
+    s,
+  )
+) {
+  return null;
+}
   const currency = /\$/.test(s) ? "USD" : /€/.test(s) ? "EUR" : /£/.test(s) ? "GBP" : "INR";
   const lpa = /lpa|lakh|per\s*annum|\/\s*year|annually/i.test(s);
   const lakh = /lakh|lpa/i.test(s);
