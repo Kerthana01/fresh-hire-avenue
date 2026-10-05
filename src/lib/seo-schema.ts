@@ -302,7 +302,7 @@ export function jobPostingSchema(job: {
   const employmentType = detectEmploymentType(job.job_title, job.experience);
   const salary = parseSalary(job.salary);
   const absoluteLogo = absoluteLogoUrl(job.company_logo);
-  const directApply = /^https?:\/\//i.test(job.apply_link);
+ const directApply = false;
 
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
