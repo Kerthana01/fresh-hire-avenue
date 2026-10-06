@@ -425,7 +425,12 @@ export function jobPostingSchema(job: {
     };
   }
 
-  if (job.qualification) schema.educationRequirements = job.qualification;
+  if (
+  job.qualification &&
+  !/not\s*(officially\s*)?specified|not\s*disclosed|unknown|n\/a/i.test(job.qualification)
+) {
+  schema.educationRequirements = job.qualification;
+}
   if (job.experience) {
     const months = parseExperienceMonths(job.experience);
     if (months !== null) {
