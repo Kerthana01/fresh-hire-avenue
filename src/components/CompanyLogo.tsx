@@ -17,18 +17,22 @@ const sizeMap = {
 };
 
 /** Only self-hosted images are rendered; anything else falls back to initials. */
-function selfHosted(logo?: string | null) {
+function validLogoUrl(logo?: string | null) {
   if (!logo) return null;
+
   const v = logo.trim();
+
   if (v.startsWith("/")) return v;
-  if (v.startsWith("https://careeralerts.co.in/")) return v;
+
+  if (v.startsWith("https://")) return v;
+
   return null;
 }
 
 export function CompanyLogo({ name, logo, size = "md", className, priority }: CompanyLogoProps) {
   const s = sizeMap[size];
   const initials = name.trim().slice(0, 2).toUpperCase();
-  const src = selfHosted(logo);
+  const src = validLogoUrl(logo);
   return (
     <div
       className={cn(
